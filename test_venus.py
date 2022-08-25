@@ -1,5 +1,5 @@
 import psutil,pytest,os,re,time,datetime,allure
-os.system("rm -f /root/pytest/allure/*")
+#os.system("rm -f /root/pytest/allure/*")
 @allure.feature("检查venus进程是否存在")
 def test_process_exist():
     for i in psutil.pids():
