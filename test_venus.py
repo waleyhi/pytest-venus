@@ -23,7 +23,7 @@ class Test_venus_status():
     def test_venus_alive(self):
         time.sleep(180)
         venus_pid=[pid for pid in psutil.pids() if psutil.Process(pid).name()=="venus"]
-        a=psutil.Process(venus_pid).create_time()
+        a=psutil.Process(venus_pid[0]).create_time()
         b=time.time()
         c=b-a
         print ("venus 进程已稳定运行%f秒" % c)
