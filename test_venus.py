@@ -96,7 +96,7 @@ class Test_venus_wallet():
     @allure.story("venus wallet set-password命令是否正常")
     def test_wallet_set_password(self):
         try:
-            set_password_process=pexpect.spawn("/root/venus wallet set-password",timeout(10))
+            set_password_process=pexpect.spawn("/root/venus wallet set-password")
             set_password_process.expect("Password:")
             set_password_process.sendline("admin123")
             set_password_process.expect("Enter Password again:")
