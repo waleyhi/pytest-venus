@@ -7,6 +7,7 @@ import re
 import time
 import func_timeout
 
+@allure.epic("venus测试")
 @allure.feature("venus主程序测试")
 class Test_venus_status():
     @allure.story("测试venus程序是否能启动")

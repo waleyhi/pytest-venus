@@ -1,4 +1,5 @@
 import psutil,pytest,os,re,time,datetime,allure
+@allure.epic("venus-gateway测试")
 @allure.feature("检查venus-gateway进程是否存在")
 def test_process_exist():
     for i in psutil.pids():
