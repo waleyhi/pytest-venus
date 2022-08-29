@@ -23,7 +23,7 @@ class Test_venus_status():
         assert a==1,"venus 进程不存在"
     @allure.story("测试venus程序是否能稳定运行3分钟不崩溃")
     def test_venus_alive(self):
-        time.sleep(180)
+        #time.sleep(180)
         venus_pid=[pid for pid in psutil.pids() if psutil.Process(pid).name()=="venus"]
         a=psutil.Process(venus_pid[0]).create_time()
         b=time.time()
