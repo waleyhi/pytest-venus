@@ -104,8 +104,9 @@ class Test_venus_wallet():
             set_password_process.expect("Password set successfully")
             a=1
             print ("密码设置成功，新密码为admin123")
-        except:
+        except Exception as e:
             a=0
+            print ("密码设置失败，报错信息为：",e)
         assert a==1,"密码设置失败，请检查venus wallet set-password命令"
     @allure.story("测试wallet new/new bls是否能生成t3地址")
     def test_wallet_new_t3(self):
