@@ -8,7 +8,7 @@ import time
 import func_timeout
 
 @allure.feature("venus主程序测试")
-class Test_program_status():
+class Test_venus_status():
     @allure.story("测试venus程序是否能启动")
     def test_venus_start(self):
         for i in psutil.pids():
@@ -22,7 +22,7 @@ class Test_program_status():
     @allure.story("测试venus程序是否能稳定运行3分钟不崩溃")
     def test_venus_alive(self):
         time.sleep(180)
-        venus_pid=[pid for i in psutil.pids() if psutil.Process(i).name()=="venus"]
+        venus_pid=[pid for pid in psutil.pids() if psutil.Process(pid).name()=="venus"]
         a=psutil.Process(venus_pid).create_time()
         b=time.time()
         c=b-a
@@ -35,7 +35,7 @@ class Test_program_status():
         time1=datetime.datetime.strptime(height_time,'%Y-%m-%d %H:%M:%S')
         time2=time1.timestamp()
         time3=time.time()
-        print ("当前区块时间为%s,实际时间为%s" % time1,datetime.datetime.now())
+        print ("当前区块时间为%s,实际时间为%s" % (time1,datetime.datetime.now()))
         assert time3-time2 < 60,"高度同步异常，venus已超过60秒没更新高度"
 @allure.feature("venus state 各命令测试")
 class Teststate():
@@ -69,7 +69,7 @@ class Testchain():
         os.system("/root/venus chain export /tmp/test.car")
         car_path='/tmp/test.car'
         car_size=os.path.getsize(car_path)/1024/1024
-        print ("高度car文件已导出，路径为%s,大小为%s MB" % car_path,car_size)
+        print ("高度car文件已导出，路径为%s,大小为%s MB" % (car_path,car_size))
         assert os.path.isfile(car_path),"导出链失败，请检查chain export命令"
 @allure.feature("venus wallet 各命令测试")
 class Testwallet():
