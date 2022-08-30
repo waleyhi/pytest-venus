@@ -8,6 +8,7 @@ import time
 import pexpect
 import func_timeout
 
+#venus 主程序测试
 @allure.epic("venus测试")
 @allure.feature("venus主程序测试")
 class Test_venus_status():
@@ -40,7 +41,7 @@ class Test_venus_status():
         print ("当前区块时间为%s,实际时间为%s" % (time1,datetime.datetime.now()))
         assert time3-time2 < 60,"高度同步异常，venus已超过60秒没更新高度"
 
-
+#venus state 命令模块测试
 @allure.epic("venus测试")
 @allure.feature("venus state 各命令测试")
 class Teststate():
@@ -68,6 +69,7 @@ class Teststate():
                 a=0
         assert a==1,"venus actor版本不对，请检查actor-cids"
 
+#venus chain 命令模块测试
 @allure.epic("venus测试")
 @allure.feature("venus chain 各命令测试")
 class Testchain():
@@ -79,6 +81,7 @@ class Testchain():
         print ("高度car文件已导出，路径为%s,大小为%s MB" % (car_path,car_size))
         assert os.path.isfile(car_path),"导出链失败，请检查chain export命令"
 
+#venus wallet 命令模块测试
 @allure.epic("venus测试")
 @allure.feature("venus wallet 各命令测试")
 class Test_venus_wallet():
@@ -138,11 +141,61 @@ class Test_venus_wallet():
             print ("命令报错，报错信息为：",e)
             a=0
         assert a==1
- #   def test_wallet_set_default(self):
- #       wallet_ls_info=os.popen("/root/venus wallet ls").readlines()
- #       not_default_wallet=[i for i in wallet_ls_info if 'X' not in i][-1]
- #       print ("需要设置为默认钱包地址的t3地址信息为：",not_default_wallet)
- #       set_default_wallet_info=os.popen('/root/venus wallet set-default '
+    def test_wallet_set_default(self):
+        wallet_ls_info=os.popen("/root/venus wallet ls").readlines()
+        not_default_wallet=[i for i in wallet_ls_info if 'X' not in i][-1]
+        print ("需要设置为默认钱包地址的t3地址信息为：",not_default_wallet)
+        not_default_wallet_address=not_default_wallet.split()[0]
+        try:
+            set_default_wallet_info=os.popen(f'/root/venus wallet set-default {not_default_wallet_address}').readlines()
+            print ("已将%s设置为默认钱包地址" % set_default_wallet_info[0])
+            a=1
+        except Exception as e:
+            print ("设置钱包地址报错，报错信息为：",e)
+            a=0
+        assert a==1,"venus 节点设置钱包地址报错"
+    @allure.story("测试venus wallet lock功能是否正常")
+    def test_wallet_lock(self):
+        wallet_lock = os.popen("/root/venus wallet lock").readlines()
+        print ("命令执行结果为：",wallet_lock)
+        if 'success' in wallet_lock:
+            a=1
+        elif 'already locked' in wallet_lock:
+            a=1
+        else:
+            a=0
+        assert a==1,"venus wallet lock命令执行失败"
+    @allure.story("测试 venus wallet unlock功能是否正常")
+    def test_wallet_unlock(self):
+        wallet_unlock_info = os.popen("echo 'admin123' | /root/venus wallet unlock").readlines()
+        print("命令执行结果为：", wallet_unlock_info)
+        if 'unlocked success' in wallet_unlock_info:
+            a=1
+        elif 'already unlocked' in wallet_unlock_info:
+            a=1
+        else:
+            a=0
+        assert a==1,"venus wallet unlock命令执行失败"
+    def test_wallet_import(self):
+        private_key='7b2254797065223a22626c73222c22507269766174654b6579223a225039715136684d414c74695162623955754c48624371586a4d555161576346346774466c6c4759434b52553d227d'
+        t3_addr='t3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
+        wallet_import_info = os.popen(f"echo '{private_key}'|/root/venus wallet import").readlines()
+        print ("命令执行结果为：",wallet_import_info)
+        if f'{t3_addr}' in wallet_import_info:
+            a=1
+        else:
+            a=0
+        assert a==1,"venus wallet import导入钱包地址失败"
+    def test_wallet_export(self):
+        private_key='7b2254797065223a22626c73222c22507269766174654b6579223a225039715136684d414c74695162623955754c48624371586a4d555161576346346774466c6c4759434b52553d227d'
+        t3_addr = 't3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
+        wallet_export_info=os.popen(f"echo 'admin123' | /root/venus wallet export {t3_addr}").readlines()
+        print ("命令执行结果为：",wallet_export_info)
+        if {private_key} in wallet_export_info:
+            a=1
+        else:
+            a=0
+        assert a==1,"venus wallet export导出钱包地址失败"
 
 if __name__ == '__main__':
     pytest.main()
