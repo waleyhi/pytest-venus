@@ -109,7 +109,7 @@ class Test_venus_wallet():
                     set_password_process.sendline("admin123")
                     a=1
                     print("密码设置成功，新密码为admin123")
-                    process.interact()
+                    set_password_process.interact()
                 else:
                     print("命令执行未出现again字样")
                     a=0
@@ -211,7 +211,7 @@ class Test_venus_wallet():
         t3_addr = 't3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
         wallet_export_info=os.popen(f"echo 'admin123' | /root/venus wallet export {t3_addr}").readlines()
         print ("命令执行结果为：",wallet_export_info)
-        if {private_key} in wallet_export_info[0]:
+        if f'{private_key}' in wallet_export_info[0]:
             a=1
         else:
             a=0
