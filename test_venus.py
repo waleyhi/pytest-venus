@@ -99,12 +99,24 @@ class Test_venus_wallet():
     def test_wallet_set_password(self):
         try:
             set_password_process=pexpect.spawn("/root/venus wallet set-password")
-            set_password_process.expect("Password:")
-            set_password_process.sendline("admin123")
-            set_password_process.expect("Enter Password again:")
-            set_password_process.sendline("admin123")
-            a=1
-            print ("密码设置成功，新密码为admin123")
+            expect_list = ['Password:',pexpect.EOF,pexpect.TIMEOUT,]
+            index=set_password_process.expect(expect_list)
+            if index==0:
+                set_password_process.sendline("admin123")
+                expect_list = ['Enter Password again:',pexpect.EOF,pexpect.TIMEOUT,]
+                index=set_password_process.expect(expect_list)
+                if index==0:
+                    set_password_process.sendline("admin123")
+                    a=1
+                    print("密码设置成功，新密码为admin123")
+                    process.interact()
+                else:
+                    print("命令执行未出现again字样")
+                    a=0
+                    print('EOF or TIMEOUT')
+            else:
+                print ("命令执行未出现password字样")
+                print('EOF or TIMEOUT')
         except Exception as e:
             a=0
             print ("密码设置失败，报错信息为：",e)
