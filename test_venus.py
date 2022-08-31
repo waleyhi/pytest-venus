@@ -109,7 +109,7 @@ class Test_venus_wallet():
                     set_password_process.sendline("admin123")
                     a=1
                     print("密码设置成功，新密码为admin123")
-                    set_password_process.interact()
+                    #set_password_process.interact()
                 else:
                     print("命令执行未出现again字样")
                     a=0
