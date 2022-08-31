@@ -23,7 +23,7 @@ class Test_venus_status():
     @allure.story("测试venus程序是否能稳定运行3分钟不崩溃")
     def test_venus_alive(self):
         #time.sleep(180)
-        venus_pid=[pid for pid in psutil.pids() if psutil.Process(pid).name()=="venus"]
+        venus_pid=[pid for pid in psutil.pids() if psutil.Process(pid).name()=="venus" and psutil.Process(pid).cmdline()[1]=="daemon"]
         a=psutil.Process(venus_pid[0]).create_time()
         b=time.time()
         c=b-a
@@ -181,6 +181,7 @@ class Test_venus_wallet():
             a=0
         assert a==1,"venus wallet unlock命令执行失败"
     @allure.story("测试venus wallet import是否能导入钱包地址")
+    @pytest.mark.run(order=4)
     def test_wallet_import(self):
         private_key='7b2254797065223a22626c73222c22507269766174654b6579223a225039715136684d414c74695162623955754c48624371586a4d555161576346346774466c6c4759434b52553d227d'
         t3_addr='t3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
@@ -192,6 +193,7 @@ class Test_venus_wallet():
             a=0
         assert a==1,"venus wallet import导入钱包地址失败"
     @allure.story("测试venus wallet export是否能导出钱包地址")
+    @pytest.mark.run(order=4)
     def test_wallet_export(self):
         private_key='7b2254797065223a22626c73222c22507269766174654b6579223a225039715136684d414c74695162623955754c48624371586a4d555161576346346774466c6c4759434b52553d227d'
         t3_addr = 't3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
