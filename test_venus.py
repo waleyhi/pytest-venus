@@ -6,7 +6,6 @@ import pytest
 import re
 import time
 import pexpect
-#venus 主程序测试
 @allure.epic("venus测试")
 @allure.feature("venus主程序测试")
 class Test_venus_status():
@@ -199,7 +198,7 @@ class Test_venus_wallet():
         t3_addr='t3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
         wallet_import_info = os.popen(f"echo '{private_key}'|/root/venus wallet import").readlines()
         print ("命令执行结果为：",wallet_import_info)
-        if f'{t3_addr}' in wallet_import_info[0]:
+        if f'{t3_addr}' in ("".join(wallet_import_info)):
             a=1
         else:
             a=0
@@ -211,7 +210,7 @@ class Test_venus_wallet():
         t3_addr = 't3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
         wallet_export_info=os.popen(f"echo 'admin123' | /root/venus wallet export {t3_addr}").readlines()
         print ("命令执行结果为：",wallet_export_info)
-        if f'{private_key}' in wallet_export_info[0]:
+        if f'{private_key}' in ("".join(wallet_export_info)):
             a=1
         else:
             a=0
