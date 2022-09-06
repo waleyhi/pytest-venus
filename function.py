@@ -3,13 +3,16 @@ import psutil
 def process_check(process_name):
     for i in psutil.pids():
         if psutil.Process(i).name()==f"{process_name}":
+            print(f"{process_name}进程正在运行,进程号为:%s" % i)
             return 1
             break
         else:
             continue
         return 0
 
-#检查进程是否能运行超过3分钟，返回1表示正常，返回0表示失败
-#def process_alive(process_name):
-
+#获取进程创建的时间
+def process_alive(process_name,process_cmd):
+    process_pid = [pid for pid in psutil.pids() if psutil.Process(pid).name() == f"{process_name}" and psutil.Process(pid).cmdline()[1] == f"{process_cmd}"]
+    process_create_time=psutil.Process(process_pid[0]).create_time()
+    return process_create_time
 
