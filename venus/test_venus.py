@@ -114,12 +114,14 @@ class Test_venus_wallet():
                         print("密码设置成功，新密码为admin123")
                     else:
                         print ('EOF or TIMEOUT')
+                        a=0
                 else:
                     print("命令执行未出现again字样")
                     a=0
                     print('EOF or TIMEOUT')
             else:
                 print ("命令执行未出现password字样")
+                a=0
                 print('EOF or TIMEOUT')
         except Exception as e:
             a=0
