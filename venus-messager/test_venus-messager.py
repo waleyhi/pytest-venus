@@ -2,20 +2,20 @@ import os
 import allure
 import time
 import pytest
-import function
+import venus_messager_function
 @allure.epic("venus-messager测试")
 @allure.feature("venus-messager主程序测试")
 class Test_venus_messager_status():
     @allure.story("测试venus-messager程序是否能启动")
     @pytest.mark.run(order=1)
     def test_venus_messager_start(self):
-        a= function.process_check('venus-messager')
+        a= venus_messager_function.process_check('venus-messager')
         assert a==1,"venus-messager 进程不存在"
     @allure.story("测试venus-messager程序是否能稳定运行3分钟不崩溃")
     @pytest.mark.run(order=1)
     def test_venus_messager_alive(self):
         #time.sleep(180)
-        a= function.process_alive('venus_messager', 'run')
+        a= venus_messager_function.process_alive('venus_messager', 'run')
         b=time.time()
         c=b-a
         print ("venus-messager 进程已稳定运行%f秒" % c)
@@ -60,7 +60,7 @@ class Test_venus_messager_msg():
     @allure.story("测试venus-messager msg search搜索指定消息是否正常")
     @pytest.mark.run(order=3)
     def test_venus_messager_msg_search_id(self):
-        msg_id= function.venus_messager_id_get('list')
+        msg_id= venus_messager_function.venus_messager_id_get('list')
         try:
             messager_msg_search_id_info = os.popen(f"/root/venus-messager msg search --id {msg_id}").readlines()
             print ("命令执行结果为：",messager_msg_search_id_info)
@@ -91,7 +91,7 @@ class Test_venus_messager_address():
     @pytest.mark.run(order=2)
     def test_venus_messager_address_search(self):
         global address_addr
-        address_addr= function.venus_messager_address_get()
+        address_addr= venus_messager_function.venus_messager_address_get()
         try:
             messager_address_search = os.popen(f"/root/venus-messager address search {address_addr}").readlines()
             print ("命令执行结果为：",messager_address_search)
@@ -111,7 +111,7 @@ class Test_venus_messager_address():
         try:
             messager_address_forbidden = os.popen(f"/root/venus-messager address forbidden {address_addr}").readlines()
             print("命令执行结果为：", messager_address_forbidden)
-            address_status= function.venus_messager_address_state(f'{address_addr}')
+            address_status= venus_messager_function.venus_messager_address_state(f'{address_addr}')
             if address_status=='4,' and 'forbidden address success!' == messager_address_forbidden[0]:
                 a = 1
             else:
@@ -127,7 +127,7 @@ class Test_venus_messager_address():
         try:
             messager_address_active = os.popen(f"/root/venus-messager address active {address_addr}").readlines()
             print("命令执行结果为：", messager_address_active)
-            address_status = function.venus_messager_address_state(f'{address_addr}')
+            address_status = venus_messager_function.venus_messager_address_state(f'{address_addr}')
             if address_status == '1,' and 'active address success!'==messager_address_active[0]:
                 a = 1
             else:
@@ -144,7 +144,7 @@ class Test_venus_messager_address():
             messager_address_del = os.popen(f"/root/venus-messager address del {address_addr}").readlines()
             print("命令执行结果为：", messager_address_del)
             #获取删除地址状态
-            address_status = function.venus_messager_address_state(f'{address_addr}')
+            address_status = venus_messager_function.venus_messager_address_state(f'{address_addr}')
             #如果地址状态为0，则说明已经无法搜索到该地址，删除正常
             if address_status == 0:
                 a = 1
