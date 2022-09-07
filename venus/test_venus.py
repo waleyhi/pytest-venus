@@ -106,9 +106,14 @@ class Test_venus_wallet():
                 index=set_password_process.expect(expect_list)
                 if index==0:
                     set_password_process.sendline("admin123")
-                    a=1
-                    print("密码设置成功，新密码为admin123")
-                    #set_password_process.interact()
+                    expect_list = ['Password set successfully',pexpect.EOF,pexpect.TIMEOUT,]
+                    index=set_password_process.expect(expect_list)
+                    if index==0:
+                        set_password_process.interact()
+                        a=1
+                        print("密码设置成功，新密码为admin123")
+                    else:
+                        print ('EOF or TIMEOUT')
                 else:
                     print("命令执行未出现again字样")
                     a=0
