@@ -15,7 +15,7 @@ class Test_venus_messager_status():
     @pytest.mark.run(order=1)
     def test_venus_messager_alive(self):
         #time.sleep(180)
-        a= venus_messager_function.process_alive('venus_messager', 'run')
+        a= venus_messager_function.process_alive('venus-messager', 'run')
         b=time.time()
         c=b-a
         print ("venus-messager 进程已稳定运行%f秒" % c)
@@ -112,7 +112,7 @@ class Test_venus_messager_address():
             messager_address_forbidden = os.popen(f"/root/venus-messager address forbidden {address_addr}").readlines()
             print("命令执行结果为：", messager_address_forbidden)
             address_status= venus_messager_function.venus_messager_address_state(f'{address_addr}')
-            if address_status=='4,' and 'forbidden address success!' == messager_address_forbidden[0]:
+            if address_status=='4,' and 'forbidden address success!' in messager_address_forbidden[0]:
                 a = 1
             else:
                 a = 0
@@ -128,7 +128,7 @@ class Test_venus_messager_address():
             messager_address_active = os.popen(f"/root/venus-messager address active {address_addr}").readlines()
             print("命令执行结果为：", messager_address_active)
             address_status = venus_messager_function.venus_messager_address_state(f'{address_addr}')
-            if address_status == '1,' and 'active address success!'==messager_address_active[0]:
+            if address_status == '1,' and 'active address success!' in messager_address_active[0]:
                 a = 1
             else:
                 a = 0

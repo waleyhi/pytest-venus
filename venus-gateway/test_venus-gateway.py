@@ -19,7 +19,7 @@ class Test_venus_gateway_status():
     @allure.story("测试venus-gateway程序是否能稳定运行3分钟不崩溃")
     def test_venus_gateway_alive(self):
         #time.sleep(180)
-        venus_gateway_pid=[pid for pid in psutil.pids() if psutil.Process(pid).name()=="venus-gateway" and psutil.Process(pid).cmdline()[1]=="listen"]
+        venus_gateway_pid=[pid for pid in psutil.pids() if psutil.Process(pid).name()=="venus-gateway"]
         a=psutil.Process(venus_gateway_pid[0]).create_time()
         b=time.time()
         c=b-a
