@@ -21,6 +21,7 @@ class Test_venus_messager_status():
         print ("venus-messager 进程已稳定运行%f秒" % c)
         assert c > 180,"venus-messager 运行时间不足3分钟"
 
+
 @allure.epic("venus-messager测试")
 @allure.feature("venus-messager msg功能模块测试")
 class Test_venus_messager_msg():
@@ -73,6 +74,8 @@ class Test_venus_messager_msg():
             print ("msg search 信息报错，报错信息为：",e)
             a=0
         assert a==1,"venus-messager msg search --id测试失败"
+
+
 @allure.epic("venus-messager测试")
 @allure.feature("venus-messager address功能模块测试")
 class Test_venus_messager_address():
@@ -80,7 +83,7 @@ class Test_venus_messager_address():
     @pytest.mark.run(order=1)
     def test_venus_messager_address_list(self):
         try:
-            messager_address_list = os.popen("/root/venus-messager address list").readlines()
+            messager_address_list = os.popen("/root/venus-messager address list").read()
             print ("messager address list执行结果为：",messager_address_list)
             a=1
         except Exception as e:
@@ -104,6 +107,38 @@ class Test_venus_messager_address():
             print ("address search 信息报错，报错信息为：",e)
             a=0
         assert a==1,"venus-messager address search 测试失败"
+    @allure.story("测试venus-messager address set-sel-msg-num指定地址设置消息推送数量是否正常")
+    @pytest.mark.run(order=3)
+    def test_venus_messager_address_set_sel_msg_num(self):
+        global address_addr
+        try:
+            os.popen(f"/root/venus-messager address set-sel-msg-num --num=1234 {address_addr}")
+            messager_address_list = os.popen(f"/root/venus-messager address search {address_addr}").read()
+            address_info_dict=eval(messager_address_list)
+            if address_info_dict['selMsgNum'] == 1234:
+                a=1
+            else:
+                a=0
+        except Exception as e:
+            print ("命令执行报错，报错信息为：",e)
+            a=0
+        assert a==1,"address set-sel-msg-num测试失败"
+    @allure.story("测试venus-messager address set-fee-params指定地址设置消息gas参数是否正常")
+    @pytest.mark.run(order=3)
+    def test_venus_messager_address_set_fee_params(self):
+        global address_addr
+        try:
+            os.popen(f"/root/venus-messager address set-fee-params --gas-overestimation=1.6 --max-feecap=7 --max-fee=7 {address_addr}")
+            messager_address_list = os.popen(f"/root/venus-messager address search {address_addr}").read()
+            address_info_dict = eval(messager_address_list)
+            if address_info_dict['gasOverEstimation'] == 1.6 and address_info_dict['maxFee']=='7' and address_info_dict['maxFeeCap']=='7':
+                a = 1
+            else:
+                a = 0
+        except Exception as e:
+            print("命令执行报错，报错信息为：", e)
+            a = 0
+        assert a == 1, "address set-fee-params测试失败"
     @allure.story("测试venus-messager address forbidden禁用地址是否正常")
     @pytest.mark.run(order=3)
     def test_venus_messager_address_forbidden(self):
@@ -154,7 +189,13 @@ class Test_venus_messager_address():
             print("address forbidden 信息报错，报错信息为：", e)
             a = 0
         assert a == 1, "venus-messager address del 测试失败"
-class Test_venus_messager_share-params():
+
+
+@allure.epic("venus-messager测试")
+@allure.feature("venus-messager share-params功能模块测试")
+class Test_venus_messager_share_params():
+    @allure.story("测试venus-messager share-params 查看当前消息推送参数是否正常")
+    @pytest.mark.run(order=1)
     def test_venus_messager_share_params_get(self):
         try:
             share_params_get=venus_messager_function.venus_messager_share_params_get()
@@ -167,6 +208,8 @@ class Test_venus_messager_share-params():
             print("命令报错,错误信息为：",e)
             a=0
         assert a==1,"messager share-params get 测试报错"
+    @allure.story("测试venus-messager share-params set修改消息推送参数是否正常")
+    @pytest.mark.run(order=1)
     def test_venus_messager_share_params_set(self):
         try:
             messager_share_params_set = os.popen("/root/venus-messager share-params set --gas-over-estimation=1.5 --max-fee=7 --max-feecap=7000000000 --sel-msg-num=1").read()
@@ -182,6 +225,6 @@ class Test_venus_messager_share-params():
             a=0
         assert a==1,"messager share-params set测试失败"
 if __name__ == '__main__':
-    #定义全局变量address_addr，用于forbidden、active、del测试
+    #定义全局变量address_addr，在search测试模块中赋值，用于forbidden、active、del测试
     global address_addr
     pytest.main()
