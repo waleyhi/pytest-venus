@@ -96,27 +96,29 @@ class Test_venus_wallet():
     @allure.story("venus wallet set-password命令是否正常")
     @pytest.mark.run(order=1)
     def test_wallet_set_password(self):
-        set_password_process=pexpect.spawn("/root/venus wallet set-password")
+        set_password_process=pexpect.spawn("/root/venus wallet set-password",timeout=180)
         expect_list = ['Password:',pexpect.EOF,pexpect.TIMEOUT,]
         index=set_password_process.expect(expect_list)
         if index==0:
+            print ("正在第一次输入密码")
             set_password_process.sendline("admin123")
             expect_list = ['Enter Password again:',pexpect.EOF,pexpect.TIMEOUT,]
             index=set_password_process.expect(expect_list)
             if index==0:
+                print ("正在输入第二次密码")
                 set_password_process.sendline("admin123")
                 expect_list = ['Password set successfully.*','Error: set password more than once',pexpect.EOF,pexpect.TIMEOUT,]
                 index=set_password_process.expect(expect_list)
                 if index==0:
-                    set_password_process.interact()
+                    #set_password_process.interact()
                     a=1
                     print("密码设置成功，新密码为admin123")
                 elif index == 1:
-                    set_password_process.interact()
+                    #set_password_process.interact()
                     a = 1
                     print("密码已设置，无需再次设置，密码为admin123")
                 else:
-                    print ('EOF or TIMEOUT')
+                    print ('1EOF or TIMEOUT')
                     a=0
             else:
                 print("命令执行未出现again字样")
