@@ -96,42 +96,42 @@ class Test_venus_wallet():
     @allure.story("venus wallet set-password命令是否正常")
     @pytest.mark.run(order=1)
     def test_wallet_set_password(self):
-        try:
-            set_password_process=pexpect.spawn("/root/venus wallet set-password")
-            expect_list = ['Password:',pexpect.EOF,pexpect.TIMEOUT,]
+        set_password_process=pexpect.spawn("/root/venus wallet set-password")
+        expect_list = ['Password:',pexpect.EOF,pexpect.TIMEOUT,]
+        index=set_password_process.expect(expect_list)
+        if index==0:
+            set_password_process.sendline("admin123")
+            expect_list = ['Enter Password again:',pexpect.EOF,pexpect.TIMEOUT,]
             index=set_password_process.expect(expect_list)
             if index==0:
                 set_password_process.sendline("admin123")
-                expect_list = ['Enter Password again:',pexpect.EOF,pexpect.TIMEOUT,]
+                expect_list = ['Password set successfully.*','Error: set password more than once',pexpect.EOF,pexpect.TIMEOUT,]
                 index=set_password_process.expect(expect_list)
                 if index==0:
-                    set_password_process.sendline("admin123")
-                    expect_list = ['Password set successfully',pexpect.EOF,pexpect.TIMEOUT,]
-                    index=set_password_process.expect(expect_list)
-                    if index==0:
-                        set_password_process.interact()
-                        a=1
-                        print("密码设置成功，新密码为admin123")
-                    else:
-                        print ('EOF or TIMEOUT')
-                        a=0
+                    set_password_process.interact()
+                    a=1
+                    print("密码设置成功，新密码为admin123")
+                elif index == 1:
+                    set_password_process.interact()
+                    a = 1
+                    print("密码已设置，无需再次设置，密码为admin123")
                 else:
-                    print("命令执行未出现again字样")
+                    print ('EOF or TIMEOUT')
                     a=0
-                    print('EOF or TIMEOUT')
             else:
-                print ("命令执行未出现password字样")
+                print("命令执行未出现again字样")
                 a=0
                 print('EOF or TIMEOUT')
-        except Exception as e:
+        else:
+            print ("命令执行未出现password字样")
             a=0
-            print ("密码设置失败，报错信息为：",e)
+            print('EOF or TIMEOUT')
         assert a==1,"密码设置失败，请检查venus wallet set-password命令"
     @allure.story("测试wallet new/new bls是否能生成t3地址")
     @pytest.mark.run(order=2)
     def test_wallet_new_t3(self):
         try:
-            wallet_new_info_t3=os.popen("/root/venus wallet new").readlines()[0]
+            wallet_new_info_t3=os.popen("/root/venus wallet new").read()
             print ("命令执行成功，新建t3地址为：",wallet_new_info_t3)
             a=1
         except Exception as e:
@@ -142,7 +142,7 @@ class Test_venus_wallet():
     @pytest.mark.run(order=2)
     def test_wallet_new_t1(self):
         try:
-            wallet_new_info_t1 = os.popen("/root/venus wallet new --type=secp256k1").readlines()[0]
+            wallet_new_info_t1 = os.popen("/root/venus wallet new --type=secp256k1").read()
             print ("命令执行成功，新建t1地址为：",wallet_new_info_t1)
             a=1
         except Exception as e:
