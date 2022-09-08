@@ -53,6 +53,14 @@ def venus_messager_address_get():
         messager_address_addr=messager_address_info[3].split('"')[3]
         return messager_address_addr
 def venus_messager_address_state(address):
+    '''
+    用于获取venus-messager中address的状态
+    返回0表示输入的钱包地址没有搜索到信息
+    正常返回该地址state值
+    调用需要的参数：钱包地址
+    :param address:
+    :return:
+    '''
     messager_address_info = os.popen(f"/root/venus-messager address search {address}").readlines()
     if len(messager_address_info) > 2:
         messager_address_state = messager_address_info[6].split()[1]
@@ -60,4 +68,14 @@ def venus_messager_address_state(address):
     else:
         print("无法找到对应钱包地址信息，请检查钱包地址信息是否正常")
         return 0
+def venus_messager_share_params_get():
+    '''
+    用于获取当前venus-messager设置的消息参数，正常返回设置参数的字符串，返回0表示没设置
+    :return:
+    '''
+    messager_share_params_get = os.popen("/root/venus-messager share-params get").read()
+    if 'record not found' in messager_share_params_get:
+        return 0
+    else:
+        return messager_share_params_get
 

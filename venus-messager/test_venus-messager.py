@@ -154,6 +154,33 @@ class Test_venus_messager_address():
             print("address forbidden 信息报错，报错信息为：", e)
             a = 0
         assert a == 1, "venus-messager address del 测试失败"
+class Test_venus_messager_share-params():
+    def test_venus_messager_share_params_get(self):
+        try:
+            share_params_get=venus_messager_function.venus_messager_share_params_get()
+            print ("messager share-params get执行结果为：",share_params_get)
+            if 'gasOverEstimation' in share_params_get:
+                a=1
+            else:
+                a=0
+        except Exception as e:
+            print("命令报错,错误信息为：",e)
+            a=0
+        assert a==1,"messager share-params get 测试报错"
+    def test_venus_messager_share_params_set(self):
+        try:
+            messager_share_params_set = os.popen("/root/venus-messager share-params set --gas-over-estimation=1.5 --max-fee=7 --max-feecap=7000000000 --sel-msg-num=1").read()
+            share_params_get=venus_messager_function.venus_messager_share_params_get()
+            #转化为字典
+            params_dict=eval(share_params_get)
+            if params_dict['gasOverEstimation']==1.5 and params_dict['maxFee']=='7' and params_dict['maxFeeCap']=='7000000000' and params_dict['selMsgNum']==1:
+                a=1
+            else:
+                a=0
+        except Exception as e:
+            print ("命令报错，报错信息为：",e)
+            a=0
+        assert a==1,"messager share-params set测试失败"
 if __name__ == '__main__':
     #定义全局变量address_addr，用于forbidden、active、del测试
     global address_addr
