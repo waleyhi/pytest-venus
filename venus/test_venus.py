@@ -177,7 +177,7 @@ class Test_venus_wallet():
             a=0
         assert a==1,"venus 节点设置钱包地址报错"
     @allure.story("测试venus wallet lock功能是否正常")
-    @pytest.mark.run(order=2)
+    @pytest.mark.run(order=3)
     def test_wallet_lock(self):
         wallet_lock = os.popen("/root/venus wallet lock").readlines()
         print ("命令执行结果为：",wallet_lock)
@@ -189,7 +189,7 @@ class Test_venus_wallet():
             a=0
         assert a==1,"venus wallet lock命令执行失败"
     @allure.story("测试 venus wallet unlock功能是否正常")
-    @pytest.mark.run(order=3)
+    @pytest.mark.run(order=4)
     def test_wallet_unlock(self):
         wallet_unlock_info = os.popen("echo 'admin123' | /root/venus wallet unlock").readlines()
         print("命令执行结果为：", wallet_unlock_info)
@@ -201,7 +201,7 @@ class Test_venus_wallet():
             a=0
         assert a==1,"venus wallet unlock命令执行失败"
     @allure.story("测试venus wallet import是否能导入钱包地址")
-    @pytest.mark.run(order=4)
+    @pytest.mark.run(order=2)
     def test_wallet_import(self):
         private_key='7b2254797065223a22626c73222c22507269766174654b6579223a225039715136684d414c74695162623955754c48624371586a4d555161576346346774466c6c4759434b52553d227d'
         t3_addr='t3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
@@ -213,7 +213,7 @@ class Test_venus_wallet():
             a=0
         assert a==1,"venus wallet import导入钱包地址失败"
     @allure.story("测试venus wallet export是否能导出钱包地址")
-    @pytest.mark.run(order=4)
+    @pytest.mark.run(order=2)
     def test_wallet_export(self):
         private_key='7b2254797065223a22626c73222c22507269766174654b6579223a225039715136684d414c74695162623955754c48624371586a4d555161576346346774466c6c4759434b52553d227d'
         t3_addr = 't3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
