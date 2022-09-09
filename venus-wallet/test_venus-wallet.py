@@ -219,9 +219,11 @@ class Test_venus_wallet_auth():
             os.popen(f"/root/venus-wallet support {account}")
             file='/root/.venus_wallet/config.toml'
             f=open(file,mode='r')
-            file_info=f.read()
+            file_info=f.readlines()
             f.close()
-            if str(account) in file_info:
+            print ("测试账号为：",account)
+            print ("venus-wallet配置文件支持账号信息为：",file_info[-1])
+            if str(account) in file_info[-1]:
                 a=1
             else:
                 a=0

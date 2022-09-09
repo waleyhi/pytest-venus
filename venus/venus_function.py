@@ -1,4 +1,5 @@
 import psutil
+import os
 #获取进程是否存在函数,返回1表示存在，0表示不存在
 def process_check(process_name):
     '''
