@@ -10,10 +10,9 @@ def process_check(process_name):
         if psutil.Process(i).name()==f"{process_name}":
             print(f"{process_name}进程正在运行,进程号为:%s" % i)
             return 1
-            break
         else:
             continue
-        return 0
+    return 0
 
 #获取进程创建的时间
 def process_alive(process_name,process_cmd):
@@ -23,6 +22,6 @@ def process_alive(process_name,process_cmd):
     :param process_cmd: 进程启动带的第一个参数
     :return:
     '''
-    process_pid = [pid for pid in psutil.pids() if psutil.Process(pid).name() == f"{process_name}" and psutil.Process(pid).cmdline()[1] == f"{process_cmd}"]
+    process_pid = [pid for pid in psutil.pids() if psutil.Process(pid).name() == f"{process_name}" and f'{process_cmd}' in psutil.Process(pid).cmdline()]
     process_create_time=psutil.Process(process_pid[0]).create_time()
     return process_create_time

@@ -26,6 +26,15 @@ def process_alive(process_name,process_cmd):
     process_pid = [pid for pid in psutil.pids() if psutil.Process(pid).name() == f"{process_name}" and f'{process_cmd}' in psutil.Process(pid).cmdline()]
     process_create_time=psutil.Process(process_pid[0]).create_time()
     return process_create_time
+
+
+
+
+
+
+
+
+
 #venus-message获取各种类型消息id用于自动化测试,如果没有查询到消息id，则返回0
 def venus_messager_id_get(list_type):
     '''
