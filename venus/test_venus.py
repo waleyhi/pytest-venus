@@ -6,6 +6,7 @@ import pytest
 import re
 import time
 import pexpect
+import venus_function
 @allure.epic("venus测试")
 @allure.feature("venus主程序测试")
 class Test_venus_status():
@@ -134,8 +135,11 @@ class Test_venus_wallet():
     def test_wallet_new_t3(self):
         try:
             wallet_new_info_t3=os.popen("/root/venus wallet new").read()
-            print ("命令执行成功，新建t3地址为：",wallet_new_info_t3)
-            a=1
+            print ("新建t3地址为：",wallet_new_info_t3)
+            if wallet_new_info_t3 in venus_function.venus_wallet_list():
+                a=1
+            else:
+                a=0
         except Exception as e:
             print("命令报错,错误信息为：",e)
             a=0
@@ -145,12 +149,15 @@ class Test_venus_wallet():
     def test_wallet_new_t1(self):
         try:
             wallet_new_info_t1 = os.popen("/root/venus wallet new --type=secp256k1").read()
-            print ("命令执行成功，新建t1地址为：",wallet_new_info_t1)
-            a=1
+            print("新建t3地址为：", wallet_new_info_t1)
+            if wallet_new_info_t1 in venus_function.venus_wallet_list():
+                a = 1
+            else:
+                a = 0
         except Exception as e:
-            print("命令报错，错误信息为：",e)
-            a=0
-        assert a==1
+            print("命令报错,错误信息为：", e)
+            a = 0
+        assert a == 1
     @allure.story("测试venus wallet ls是否能输出钱包信息")
     def test_wallet_ls(self):
         try:
