@@ -101,7 +101,7 @@ class Test_venus_wallet_auth():
     @pytest.mark.run(order=2)
     def test_wallet_new(self):
         try:
-            wallet_new_info=os.popen("/root/venus-wallet new").read()
+            wallet_new_info=os.popen("/root/venus-wallet new secp256k1").read()
             print ("新建t1地址为：",wallet_new_info)
             if wallet_new_info in venus_wallet_function.venus_wallet_list():
                 a=1
