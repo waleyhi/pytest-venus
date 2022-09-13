@@ -57,7 +57,7 @@ class Test_venus_miner():
             a=1
         else:
             a=0
-        assert a == a,"venus-miner stop停止矿工挖矿测试失败"
+        assert a == 1,"venus-miner stop停止矿工挖矿测试失败"
 
     @allure.story("测试venus-miner address start启动矿工出块是否正常")
     @pytest.mark.run(order=4)
@@ -70,7 +70,7 @@ class Test_venus_miner():
             a=1
         else:
             a=0
-        assert a == a,"venus-miner start启动矿工挖矿测试失败"
+        assert a == 1,"venus-miner start启动矿工挖矿测试失败"
     @allure.story("测试venus-miner winner计算出块权是否正常")
     @pytest.mark.run(order=2)
     def test_venus_miner_winner(self):
