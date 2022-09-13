@@ -48,3 +48,9 @@ def venus_miner_state(miner_addr):
             state=info_json[i]['IsMining']
     return state
 
+def venus_auth_test_user():
+    venus_auth_user = 'auto-test-1234'
+    return venus_auth_user
+def venus_auth_test_miner():
+    venus_auth_miner='f01000'
+    return venus_auth_miner

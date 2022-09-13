@@ -28,10 +28,8 @@ class Test_venus_miner():
     @allure.story("测试venus-miner address update从auth中更新矿工信息是否正常")
     @pytest.mark.run(order=2)
     def test_venus_miner_address_update(self):
-        global venus_auth_miner
-        global venus_auth_user
-        print (venus_auth_user)
-        print (venus_auth_miner)
+        venus_auth_miner = venus_miner_function.venus_auth_test_miner()
+        venus_auth_user = venus_miner_function.venus_auth_test_user()
         create_test_user=os.popen(f"/root/venus-auth user add {venus_auth_user}").read()
         print ("auth上创建测试用户结果为：",create_test_user)
         create_test_miner=os.popen(f"/root/venus-auth user miner add {venus_auth_user} {venus_auth_miner}").read()
@@ -51,7 +49,7 @@ class Test_venus_miner():
     @allure.story("测试venus-miner address stop停止矿工出块是否正常")
     @pytest.mark.run(order=3)
     def test_venus_miner_address_stop(self):
-        global venus_auth_miner
+        venus_auth_miner=venus_miner_function.venus_auth_test_miner()
         stop_info = os.popen(f"/root/venus-miner address stop {venus_auth_miner}").read()
         print (f"{venus_auth_miner}停止挖矿结果为：",stop_info)
         miner_state=venus_miner_function.venus_miner_state(f'{venus_auth_miner}')
@@ -64,7 +62,7 @@ class Test_venus_miner():
     @allure.story("测试venus-miner address start启动矿工出块是否正常")
     @pytest.mark.run(order=4)
     def test_venus_miner_address_start(self):
-        global venus_auth_miner
+        venus_auth_miner=venus_miner_function.venus_auth_test_miner()
         start_info = os.popen(f"/root/venus-miner address start {venus_auth_miner}").read()
         print (f"{venus_auth_miner}停止挖矿结果为：",start_info)
         miner_state=venus_miner_function.venus_miner_state(f'{venus_auth_miner}')
@@ -87,9 +85,4 @@ class Test_venus_miner():
 
 
 if __name__ == '__main__':
-    #定义全局变量，用于矿工地址测试
-    global venus_auth_user
-    global venus_auth_miner
-    venus_auth_user='auto-test-1234'
-    venus_auth_miner='f01000'
     pytest.main()
