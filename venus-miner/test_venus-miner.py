@@ -26,7 +26,7 @@ class Test_venus_miner_status:
 @allure.feature("venus-miner 各功能模块测试")
 class Test_venus_miner():
     @allure.story("测试venus-miner address update从auth中更新矿工信息是否正常")
-    @pytest.mark.run(order=1)
+    @pytest.mark.run(order=2)
     def test_venus_miner_address_update(self):
         global venus_auth_miner
         global venus_auth_user
@@ -45,6 +45,9 @@ class Test_venus_miner():
             print("update更新矿工信息报错，报错信息为：", e)
             a = 0
         assert a == 1, "venus-miner update更新矿工信息测试失败"
+
+    @allure.story("测试venus-miner address stop停止矿工出块是否正常")
+    @pytest.mark.run(order=3)
     def test_venus_miner_address_stop(self):
         global venus_auth_miner
         stop_info = os.popen(f"/root/venus-miner address stop {venus_auth_miner}").read()
@@ -55,6 +58,9 @@ class Test_venus_miner():
         else:
             a=0
         assert a == a,"venus-miner stop停止矿工挖矿测试失败"
+
+    @allure.story("测试venus-miner address start启动矿工出块是否正常")
+    @pytest.mark.run(order=4)
     def test_venus_miner_address_start(self):
         global venus_auth_miner
         start_info = os.popen(f"/root/venus-miner address start {venus_auth_miner}").read()
@@ -65,6 +71,8 @@ class Test_venus_miner():
         else:
             a=0
         assert a == a,"venus-miner start启动矿工挖矿测试失败"
+    @allure.story("测试venus-miner winner计算出块权是否正常")
+    @pytest.mark.run(order=2)
     def test_venus_miner_winner(self):
         try:
             winner_info = os.popen("/root/venus-miner winner count --epoch-start 0 --epoch-end 100 f01000").read()
