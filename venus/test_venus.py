@@ -154,7 +154,7 @@ class Test_venus_wallet():
         try:
             wallet_new_info_t1 = os.popen("/root/venus wallet new --type=secp256k1").read()
             print("新建t3地址为：", wallet_new_info_t1)
-            if wallet_new_info_t1.split() in venus_function.venus_wallet_list():
+            if wallet_new_info_t1.strip() in venus_function.venus_wallet_list():
                 a = 1
             else:
                 a = 0

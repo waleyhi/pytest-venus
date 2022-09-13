@@ -2,9 +2,9 @@ import os
 import allure
 import time
 import pytest
-import venus_wallet_function
 import uuid
 import pexpect
+import venus_wallet_function
 @allure.epic("venus-wallet测试")
 @allure.feature("venus-wallet主程序测试")
 class Test_venus_wallet_status():
@@ -18,6 +18,7 @@ class Test_venus_wallet_status():
     def test_venus_wallet_alive(self):
         #time.sleep(180)
         a= venus_wallet_function.process_alive('venus-wallet','run')
+
         b=time.time()
         c=b-a
         print ("venus-wallet 进程已稳定运行%f秒" % c)
