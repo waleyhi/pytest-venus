@@ -138,6 +138,7 @@ class Test_venus_wallet_auth():
             else:
                 a=0
         except Exception as e:
+            print("命令报错,错误信息为：", e)
             a=0
         assert a==1,'venus-wallet import地址测试失败'
     @allure.story("测试venus-wallet export导出钱包地址是否正常")
@@ -153,6 +154,7 @@ class Test_venus_wallet_auth():
             else:
                 a = 0
         except Exception as e:
+            print("命令报错,错误信息为：", e)
             a = 0
         assert a == 1, 'venus-wallet export地址测试失败'
     @allure.story("测试venus-wallet del删除钱包地址是否正常")
@@ -167,6 +169,7 @@ class Test_venus_wallet_auth():
             else:
                 a = 0
         except Exception as e:
+            print("命令报错,错误信息为：", e)
             a = 0
         assert a == 1, 'venus-wallet 删除钱包地址测试失败'
     @allure.story("测试venus-wallet lock锁定钱包地址是否正常")
@@ -217,6 +220,7 @@ class Test_venus_wallet_auth():
         account=uuid.uuid1()
         try:
             os.popen(f"/root/venus-wallet support {account}")
+            time.sleep(10)
             file='/root/.venus_wallet/config.toml'
             f=open(file,mode='r')
             file_info=f.readlines()

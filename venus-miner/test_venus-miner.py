@@ -30,6 +30,8 @@ class Test_venus_miner():
     def test_venus_miner_address_update(self):
         global venus_auth_miner
         global venus_auth_user
+        print (venus_auth_user)
+        print (venus_auth_miner)
         create_test_user=os.popen(f"/root/venus-auth user add {venus_auth_user}").read()
         print ("auth上创建测试用户结果为：",create_test_user)
         create_test_miner=os.popen(f"/root/venus-auth user miner add {venus_auth_user} {venus_auth_miner}").read()
@@ -88,6 +90,6 @@ if __name__ == '__main__':
     #定义全局变量，用于矿工地址测试
     global venus_auth_user
     global venus_auth_miner
-    venus_auth_user = 'auto-test-1234'
-    venus_auth_miner = 'f01000'
+    venus_auth_user='auto-test-1234'
+    venus_auth_miner='f01000'
     pytest.main()

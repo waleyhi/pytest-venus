@@ -34,10 +34,14 @@ class Test_venus_status():
         height=os.popen("/root/venus chain ls").readlines()[-1]
         height_time=re.split('\(|\)',height)[1]
         time1=datetime.datetime.strptime(height_time,'%Y-%m-%d %H:%M:%S')
+        #将区块时间转换为时间戳
         time2=time1.timestamp()
+        #获取系统时间戳
         time3=time.time()
-        print ("当前区块时间为%s,实际时间为%s" % (time1,datetime.datetime.now()))
-        assert time3-time2 < 60,"高度同步异常，venus已超过60秒没更新高度"
+        #计算时间差值
+        time4=time3-time2
+        print ("当前区块时间为%s,实际时间为%s,实际时间与高度时间差为%s" % (time1,datetime.datetime.now(),time4))
+        assert time4 < 60,"高度同步异常，venus已超过60秒没更新高度"
 
 #venus state 命令模块测试
 @allure.epic("venus测试")
@@ -136,7 +140,7 @@ class Test_venus_wallet():
         try:
             wallet_new_info_t3=os.popen("/root/venus wallet new").read()
             print ("新建t3地址为：",wallet_new_info_t3)
-            if wallet_new_info_t3 in venus_function.venus_wallet_list():
+            if wallet_new_info_t3.strip() in venus_function.venus_wallet_list():
                 a=1
             else:
                 a=0
@@ -150,7 +154,7 @@ class Test_venus_wallet():
         try:
             wallet_new_info_t1 = os.popen("/root/venus wallet new --type=secp256k1").read()
             print("新建t3地址为：", wallet_new_info_t1)
-            if wallet_new_info_t1 in venus_function.venus_wallet_list():
+            if wallet_new_info_t1.split() in venus_function.venus_wallet_list():
                 a = 1
             else:
                 a = 0

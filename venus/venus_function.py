@@ -27,5 +27,5 @@ def process_alive(process_name,process_cmd):
     process_create_time=psutil.Process(process_pid[0]).create_time()
     return process_create_time
 def venus_wallet_list():
-    wallet_ls_info=os.popen(f"/root/venus wallet ls").read()
+    wallet_ls_info=os.popen("/root/venus wallet ls").read()
     return wallet_ls_info
