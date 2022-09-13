@@ -1,5 +1,6 @@
 import psutil
 import os
+import json
 #获取进程是否存在函数,返回1表示存在，0表示不存在
 def process_check(process_name):
     '''
@@ -29,9 +30,21 @@ def process_alive(process_name,process_cmd):
 
 def venus_miner_list():
     '''
-    用于获取venus-miner钱包地址信息
-    以列表的形式返回钱包地址
+    用于获取venus-miner矿工地址
+    以列表的形式返回矿工信息
     '''
-    miner_list_info=os.popen(f"/root/venus-miner list").readlines()
-    return miner_list_info
+    miner_list_info=os.popen("/root/venus-miner address list").read()
+    info_json=json.loads(miner_list_info)
+    return info_json
+def venus_miner_state(miner_addr):
+    '''
+    用于获取venus-miner矿工状态
+    True表示已开启挖矿，False表示不在挖矿
+    '''
+    miner_state_info=os.popen(f"/root/venus-miner address state").read()
+    info_json=json.loads(miner_state_info)
+    for i in range(0,len(info_json)):
+        if miner_addr == info_json[i]["Addr"]:
+            state=info_json[i]['IsMining']
+    return state
 
