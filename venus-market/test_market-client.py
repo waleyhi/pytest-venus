@@ -27,7 +27,7 @@ class Test_market_client_status:
 
 @allure.epic("market-client测试")
 @allure.feature("market-client actor-funds功能模块测试")
-class Test_market_client_actor_funds:
+class TestMarketClientActorFunds:
     @allure.story("测试market-client actor-funds balances查看指定矿工市场余额是否正常")
     @pytest.mark.run(order=2)
     def test_market_client_actor_funds_balances(self):
@@ -68,7 +68,7 @@ class Test_market_client_actor_funds:
 
 @allure.epic("market-client测试")
 @allure.feature("market-client data功能模块测试")
-class Test_Market_Client_Data:
+class TestMarketClientData:
     def test_market_client_data_import(self):
         # 创建测试文件
         os.popen("dd if=/dev/zero of=/tmp/autotest-import-file-test.txt bs=1M count=5")
