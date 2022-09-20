@@ -28,6 +28,9 @@ def process_alive(process_name,process_cmd):
     process_create_time=psutil.Process(process_pid[0]).create_time()
     return process_create_time
 
+def venus_market_list_miner():
+    miner_list=os.popen("/root/venus-market actor list | grep ^t0 |awk '{print $1}'").readlines()
+    return miner_list
 
 def venus_market_list_pieces():
     '''
@@ -44,4 +47,12 @@ def venus_market_list_deals():
     '''
     market_list_deals=os.popen(f"/root/venus-market storage-deals list --verbose | egrep -v 'venusmarket|ProposalCid'").readlines()
     return market_list_deals
+
+def market_client_data_local():
+    '''
+    获取
+    :return:
+    '''
+    client_data_info=os.popen("/root/market-client data local").readlines()
+    return client_data_info
 
