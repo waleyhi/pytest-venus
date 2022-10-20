@@ -7,6 +7,10 @@ import re
 import time
 import pexpect
 import venus_function
+@pytest.fixture(scope='function',autouse=True)
+def get_venus_run_path():
+    venus_dir=venus_function.venus_run_path()
+    return venus_dir
 @allure.epic("venus测试")
 @allure.feature("venus主程序测试")
 class Test_venus_status():
@@ -31,7 +35,7 @@ class Test_venus_status():
         assert c > 180,"venus 运行时间不足3分钟"
     @allure.story("测试venus高度是否能同步到最新")
     def test_venus_height(self):
-        height=os.popen(f"{venus_dir}venus chain ls").readlines()[-1]
+        height=os.popen(f"{venus_function.venus_run_path()}venus chain ls").readlines()[-1]
         height_time=re.split('\(|\)',height)[1]
         time1=datetime.datetime.strptime(height_time,'%Y-%m-%d %H:%M:%S')
         #将区块时间转换为时间戳
@@ -235,8 +239,5 @@ class Test_venus_wallet():
         else:
             a=0
         assert a==1,"venus wallet export导出钱包地址失败"
-
 if __name__ == '__main__':
-    #获取venus程序运行的绝对路径
-    venus_dir=venus_function.venus_run_path()
     pytest.main()
