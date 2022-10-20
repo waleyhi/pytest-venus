@@ -237,6 +237,6 @@ class Test_venus_wallet():
         assert a==1,"venus wallet export导出钱包地址失败"
 
 if __name__ == '__main__':
-    #获取venus程序运行目录
+    #获取venus程序运行的绝对路径
     venus_dir=venus_function.venus_run_path()
     pytest.main()
