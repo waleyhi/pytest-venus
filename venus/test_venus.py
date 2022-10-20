@@ -52,7 +52,7 @@ class Test_venus_status():
 @allure.feature("venus state 各命令测试")
 class Teststate():
     @allure.story("venus state power 命令测试")
-    def test_state_power(self):
+    def test_state_power(self,get_venus_run_path):
         power_info=os.popen(f"{get_venus_run_path}/venus state power t01000").readlines()[0]
         print ("命令执行结果为%s" % power_info)
         power=re.split('\(',power_info)[0]
