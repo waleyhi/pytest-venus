@@ -35,7 +35,7 @@ class Test_venus_status():
         assert c > 180,"venus 运行时间不足3分钟"
     @allure.story("测试venus高度是否能同步到最新")
     def test_venus_height(self):
-        height=os.popen(f"{venus_function.venus_run_path()}venus chain ls").readlines()[-1]
+        height=os.popen(f"{venus_function.venus_run_path()}/venus chain ls").readlines()[-1]
         height_time=re.split('\(|\)',height)[1]
         time1=datetime.datetime.strptime(height_time,'%Y-%m-%d %H:%M:%S')
         #将区块时间转换为时间戳
