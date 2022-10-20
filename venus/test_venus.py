@@ -31,7 +31,7 @@ class Test_venus_status():
         assert c > 180,"venus 运行时间不足3分钟"
     @allure.story("测试venus高度是否能同步到最新")
     def test_venus_height(self):
-        height=os.popen("/root/venus chain ls").readlines()[-1]
+        height=os.popen(f"{venus_dir}venus chain ls").readlines()[-1]
         height_time=re.split('\(|\)',height)[1]
         time1=datetime.datetime.strptime(height_time,'%Y-%m-%d %H:%M:%S')
         #将区块时间转换为时间戳
@@ -49,19 +49,19 @@ class Test_venus_status():
 class Teststate():
     @allure.story("venus state power 命令测试")
     def test_state_power(self):
-        power_info=os.popen("/root/venus state power t01000").readlines()[0]
+        power_info=os.popen(f"{venus_dir}venus state power t01000").readlines()[0]
         print ("命令执行结果为%s" % power_info)
         power=re.split('\(',power_info)[0]
         assert int(power)==2516582400,"venus state power命令异常"
     @allure.story("venus state sectors 命令测试")
     def test_state_sectors(self):
-        sectors_info=os.popen("/root/venus state sectors t01000").readlines()[0]
+        sectors_info=os.popen(f"{venus_dir}venus state sectors t01000").readlines()[0]
         print ("命令执行结果为%s" % sectors_info)
         sectors=re.split(':',sectors_info)[0]
         assert int(sectors)==0,"venus state sectors 命令异常"
     @allure.story("venus state actor-cids 命令测试")
     def test_state_actor_cids(self):
-        actor_cids=os.popen("/root/venus state actor-cids").readlines()
+        actor_cids=os.popen(f"{venus_dir}venus state actor-cids").readlines()
         print ("命令执行结果为%s" % actor_cids)
         for i in range(1,20):
             if actor_cids[i]=='storagepower      bafk2bzaceb45l6zhgc34n6clz7xnvd7ek55bhw46q25umuje34t6kroix6hh6  \n':
@@ -77,7 +77,7 @@ class Teststate():
 class Testchain():
     @allure.story("测试venus高度导出为car文件是否正常")
     def test_chain_export(self):
-        os.system("/root/venus chain export /tmp/test.car")
+        os.system(f"{venus_dir}/tmp/test.car")
         car_path='/tmp/test.car'
         car_size=os.path.getsize(car_path)/1024/1024
         print ("高度car文件已导出，路径为%s,大小为%s MB" % (car_path,car_size))
@@ -89,19 +89,19 @@ class Testchain():
 class Test_venus_wallet():
     @allure.story("venus wallet ls命令是否正常")
     def test_wallet_ls(self):
-        print("命令执行结果为%s" % os.system("/root/venus wallet ls"))
-        assert os.system("/root/venus wallet ls")==0,"wallet ls失败，请检查命令"
+        print("命令执行结果为%s" % os.system(f"{venus_dir}"))
+        assert os.system(f"{venus_dir}")==0,"wallet ls失败，请检查命令"
     @allure.story("venus wallet balance命令是否正常")
     def test_wallet_balance(self):
         balance_info = os.popen(
-            "/root/venus wallet balance t3rugtczeric5kypbgnt7643omyxia6mkrevryrggrksqx73zfbqthgj7eumxbeap6hoctj45dc6k6ylyfm57a").readlines()[
+            f"{venus_dir}venus wallet balance t3rugtczeric5kypbgnt7643omyxia6mkrevryrggrksqx73zfbqthgj7eumxbeap6hoctj45dc6k6ylyfm57a").readlines()[
             0]
         print ("t3rugtczeric5kypbgnt7643omyxia6mkrevryrggrksqx73zfbqthgj7eumxbeap6hoctj45dc6k6ylyfm57a地址余额为：",balance_info)
-        assert os.system("/root/venus wallet balance t3rugtczeric5kypbgnt7643omyxia6mkrevryrggrksqx73zfbqthgj7eumxbeap6hoctj45dc6k6ylyfm57a")==0,"wallet balance失败，请检查命令"
+        assert os.system(f"{venus_dir}")==0,"wallet balance失败，请检查命令"
     @allure.story("venus wallet set-password命令是否正常")
     @pytest.mark.run(order=1)
     def test_wallet_set_password(self):
-        set_password_process=pexpect.spawn("/root/venus wallet set-password",timeout=180)
+        set_password_process=pexpect.spawn(f"{venus_dir}venus wallet set-password",timeout=180)
         expect_list = ['Password:',pexpect.EOF,pexpect.TIMEOUT,]
         index=set_password_process.expect(expect_list)
         if index==0:
@@ -138,7 +138,7 @@ class Test_venus_wallet():
     @pytest.mark.run(order=2)
     def test_wallet_new_t3(self):
         try:
-            wallet_new_info_t3=os.popen("/root/venus wallet new").read()
+            wallet_new_info_t3=os.popen(f"{venus_dir}venus wallet new").read()
             print ("新建t3地址为：",wallet_new_info_t3)
             if wallet_new_info_t3.strip() in venus_function.venus_wallet_list():
                 a=1
@@ -152,7 +152,7 @@ class Test_venus_wallet():
     @pytest.mark.run(order=2)
     def test_wallet_new_t1(self):
         try:
-            wallet_new_info_t1 = os.popen("/root/venus wallet new --type=secp256k1").read()
+            wallet_new_info_t1 = os.popen(f"{venus_dir}venus wallet new --type=secp256k1").read()
             print("新建t3地址为：", wallet_new_info_t1)
             if wallet_new_info_t1.strip() in venus_function.venus_wallet_list():
                 a = 1
@@ -165,7 +165,7 @@ class Test_venus_wallet():
     @allure.story("测试venus wallet ls是否能输出钱包信息")
     def test_wallet_ls(self):
         try:
-            wallet_ls_info = os.popen("/root/venus wallet ls ").readlines()
+            wallet_ls_info = os.popen(f"{venus_dir}venus wallet ls ").readlines()
             print ("命令执行成功，wallet信息为：",wallet_ls_info)
             a=1
         except Exception as e:
@@ -175,12 +175,12 @@ class Test_venus_wallet():
     @allure.story("测试venus wallet set-default是否能设置默认钱包地址")
     @pytest.mark.run(order=2)
     def test_wallet_set_default(self):
-        wallet_ls_info=os.popen("/root/venus wallet ls").readlines()
+        wallet_ls_info=os.popen(f"{venus_dir}venus wallet ls").readlines()
         not_default_wallet=[i for i in wallet_ls_info if 'X' not in i][-1]
         print ("需要设置为默认钱包地址的t3地址信息为：",not_default_wallet)
         not_default_wallet_address=not_default_wallet.split()[0]
         try:
-            set_default_wallet_info=os.popen(f'/root/venus wallet set-default {not_default_wallet_address}').readlines()
+            set_default_wallet_info=os.popen(f'{venus_dir}venus wallet set-default {not_default_wallet_address}').readlines()
             print ("已将%s设置为默认钱包地址" % set_default_wallet_info[0])
             a=1
         except Exception as e:
@@ -190,7 +190,7 @@ class Test_venus_wallet():
     @allure.story("测试venus wallet lock功能是否正常")
     @pytest.mark.run(order=3)
     def test_wallet_lock(self):
-        wallet_lock = os.popen("/root/venus wallet lock").readlines()
+        wallet_lock = os.popen(f"{venus_dir}venus wallet lock").readlines()
         print ("命令执行结果为：",wallet_lock)
         if 'success' in wallet_lock[0]:
             a=1
@@ -202,7 +202,7 @@ class Test_venus_wallet():
     @allure.story("测试 venus wallet unlock功能是否正常")
     @pytest.mark.run(order=4)
     def test_wallet_unlock(self):
-        wallet_unlock_info = os.popen("echo 'admin123' | /root/venus wallet unlock").readlines()
+        wallet_unlock_info = os.popen(f"echo 'admin123' | {venus_dir}venus wallet unlock").readlines()
         print("命令执行结果为：", wallet_unlock_info)
         if 'unlocked success' in wallet_unlock_info[0]:
             a=1
@@ -216,7 +216,7 @@ class Test_venus_wallet():
     def test_wallet_import(self):
         private_key='7b2254797065223a22626c73222c22507269766174654b6579223a225039715136684d414c74695162623955754c48624371586a4d555161576346346774466c6c4759434b52553d227d'
         t3_addr='t3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
-        wallet_import_info = os.popen(f"echo '{private_key}'|/root/venus wallet import").readlines()
+        wallet_import_info = os.popen(f"echo '{private_key}'|{venus_dir}venus wallet import").readlines()
         print ("命令执行结果为：",wallet_import_info)
         if f'{t3_addr}' in ("".join(wallet_import_info)):
             a=1
@@ -228,7 +228,7 @@ class Test_venus_wallet():
     def test_wallet_export(self):
         private_key='7b2254797065223a22626c73222c22507269766174654b6579223a225039715136684d414c74695162623955754c48624371586a4d555161576346346774466c6c4759434b52553d227d'
         t3_addr = 't3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
-        wallet_export_info=os.popen(f"echo 'admin123' | /root/venus wallet export {t3_addr}").readlines()
+        wallet_export_info=os.popen(f"echo 'admin123' | {venus_dir}venus wallet export {t3_addr}").readlines()
         print ("命令执行结果为：",wallet_export_info)
         if f'{private_key}' in ("".join(wallet_export_info)):
             a=1
@@ -237,4 +237,6 @@ class Test_venus_wallet():
         assert a==1,"venus wallet export导出钱包地址失败"
 
 if __name__ == '__main__':
+    #获取venus程序运行目录
+    venus_dir=venus_function.venus_run_path()
     pytest.main()
