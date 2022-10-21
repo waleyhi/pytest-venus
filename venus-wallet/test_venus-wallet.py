@@ -5,6 +5,11 @@ import pytest
 import uuid
 import pexpect
 import venus_wallet_function
+#获取venus-wallet程序运行目录
+#@pytest.fixture(scope='function',autouse=True)
+def get_venus_wallet_run_path():
+    venus_wallet_path=os.popen("ps -ef | grep venus-wallet |grep run| grep -v grep| awk '{print $2}'| xargs pwdx | awk '{print $NF}'").read().strip()
+    return venus_wallet_path
 @allure.epic("venus-wallet测试")
 @allure.feature("venus-wallet主程序测试")
 class Test_venus_wallet_status():
@@ -30,11 +35,11 @@ class Test_venus_wallet_status():
 class Test_venus_wallet_auth():
     @allure.story("测试venus-wallet auth create-token查看token信息是否正常")
     @pytest.mark.run(order=1)
-    def test_venus_wallet_auth_create_token(self):
+    def test_venus_wallet_auth_create_token(self,get_venus_wallet_run_path):
         token_type = ['read', 'write', 'sign', 'admin']
         for i in token_type:
             try:
-                auth_info = os.popen(f"/root/venus-wallet auth create-token --perm={i}").read()
+                auth_info = os.popen(f"{get_venus_wallet_run_path}/venus-wallet auth create-token --perm={i}").read()
                 print(f"{i}权限token为：", auth_info)
                 if len(auth_info) > 10:
                     a = 1
@@ -47,11 +52,11 @@ class Test_venus_wallet_auth():
         assert a == 1, f"查看{i}权限token失败"
     @allure.story("测试venus-wallet auth api-info查看token/api信息是否正常")
     @pytest.mark.run(order=1)
-    def test_venus_wallet_auth_api_info(self):
+    def test_venus_wallet_auth_api_info(self,get_venus_wallet_run_path):
         token_type = ['read', 'write', 'sign', 'admin']
         for i in token_type:
             try:
-                auth_info = os.popen(f"/root/venus-wallet auth api-info --perm={i}").read()
+                auth_info = os.popen(f"{get_venus_wallet_run_path}/venus-wallet auth api-info --perm={i}").read()
                 print(f"{i}权限token/api为：", auth_info)
                 if len(auth_info) > 10:
                     a = 1
@@ -64,8 +69,8 @@ class Test_venus_wallet_auth():
         assert a == 1, f"查看{i}权限token/api失败"
     @allure.story("测试venus-wallet set-password设置密码是否正常")
     @pytest.mark.run(order=1)
-    def test_wallet_set_password(self):
-        process=pexpect.spawn("/root/venus-wallet set-password",timeout=180)
+    def test_wallet_set_password(self,get_venus_wallet_run_path):
+        process=pexpect.spawn(f"{get_venus_wallet_run_path}/venus-wallet set-password",timeout=180)
         expect_list = ['Password:',pexpect.EOF,pexpect.TIMEOUT,]
         index=process.expect(expect_list)
         if index==0:
@@ -100,9 +105,9 @@ class Test_venus_wallet_auth():
         assert a==1,"密码设置失败，请检查venus-wallet set-password命令"
     @allure.story("测试venus-wallet new生成t1钱包地址是否正常")
     @pytest.mark.run(order=2)
-    def test_wallet_new(self):
+    def test_wallet_new(self,get_venus_wallet_run_path):
         try:
-            wallet_new_info=os.popen("/root/venus-wallet new secp256k1").read()
+            wallet_new_info=os.popen(f"{get_venus_wallet_run_path}/venus-wallet new secp256k1").read()
             print ("新建t1地址为：",wallet_new_info)
             if wallet_new_info in venus_wallet_function.venus_wallet_list():
                 a=1
@@ -114,9 +119,9 @@ class Test_venus_wallet_auth():
         assert a==1,'venus-wallet new测试创建t1新地址失败'
     @allure.story("测试venus-wallet new bls生成t3钱包地址是否正常")
     @pytest.mark.run(order=2)
-    def test_wallet_new_bls(self):
+    def test_wallet_new_bls(self,get_venus_wallet_run_path):
         try:
-            wallet_new_info=os.popen("/root/venus-wallet new bls").read()
+            wallet_new_info=os.popen(f"{get_venus_wallet_run_path}/venus-wallet new bls").read()
             print ("新建t3地址为：",wallet_new_info)
             if wallet_new_info in venus_wallet_function.venus_wallet_list():
                 a=1
@@ -128,11 +133,11 @@ class Test_venus_wallet_auth():
         assert a==1,'venus-wallet new bls测试创建t3新地址失败'
     @allure.story("测试venus-wallet import导入钱包地址是否正常")
     @pytest.mark.run(order=3)
-    def test_wallet_import(self):
+    def test_wallet_import(self,get_venus_wallet_run_path):
         global wallet_addr
         global wallet_privete_key
         try:
-            wallet_import_info=os.popen(f"echo '{wallet_privete_key}'|/root/venus-wallet import").read()
+            wallet_import_info=os.popen(f"echo '{wallet_privete_key}'|{get_venus_wallet_run_path}/venus-wallet import").read()
             print ("import地址结果为：",wallet_import_info)
             if 'successfully' in wallet_import_info and wallet_addr in venus_wallet_function.venus_wallet_list():
                 a=1
@@ -144,11 +149,11 @@ class Test_venus_wallet_auth():
         assert a==1,'venus-wallet import地址测试失败'
     @allure.story("测试venus-wallet export导出钱包地址是否正常")
     @pytest.mark.run(order=4)
-    def test_wallet_export(self):
+    def test_wallet_export(self,get_venus_wallet_run_path):
         global wallet_addr
         global wallet_privete_key
         try:
-            wallet_export_info = os.popen(f"echo 'admin123' | /root/venus-wallet export {wallet_addr}").read()
+            wallet_export_info = os.popen(f"echo 'admin123' | {get_venus_wallet_run_path}/venus-wallet export {wallet_addr}").read()
             print("export地址结果为：", wallet_export_info)
             if wallet_privete_key in wallet_export_info:
                 a = 1
@@ -160,10 +165,10 @@ class Test_venus_wallet_auth():
         assert a == 1, 'venus-wallet export地址测试失败'
     @allure.story("测试venus-wallet del删除钱包地址是否正常")
     @pytest.mark.run(order=5)
-    def test_wallet_del(self):
+    def test_wallet_del(self,get_venus_wallet_run_path):
         global wallet_addr
         try:
-            wallet_del_info = os.popen(f"echo 'admin123' | /root/venus-wallet del {wallet_addr}").read()
+            wallet_del_info = os.popen(f"echo 'admin123' | {get_venus_wallet_run_path}/venus-wallet del {wallet_addr}").read()
             print("删除钱包地址结果为：", wallet_del_info)
             if 'success' in wallet_del_info and wallet_addr not in venus_wallet_function.venus_wallet_list():
                 a = 1
@@ -175,9 +180,9 @@ class Test_venus_wallet_auth():
         assert a == 1, 'venus-wallet 删除钱包地址测试失败'
     @allure.story("测试venus-wallet lock锁定钱包地址是否正常")
     @pytest.mark.run(order=6)
-    def test_wallet_lock(self):
+    def test_wallet_lock(self,get_venus_wallet_run_path):
         try:
-            wallet_lock_info=os.popen("echo 'admin123' | /root/venus-wallet lock").read()
+            wallet_lock_info=os.popen(f"echo 'admin123' | {get_venus_wallet_run_path}/venus-wallet lock").read()
             print ("venus-wallet lock测试结果为：",wallet_lock_info)
             if 'wallet lock successfully' in wallet_lock_info or 'wallet already locked' in wallet_lock_info:
                 a=1
@@ -189,9 +194,9 @@ class Test_venus_wallet_auth():
         assert a==1,'venus-wallet lock测试锁定钱包地址失败'
     @allure.story("测试venus-wallet unlock解锁钱包地址是否正常")
     @pytest.mark.run(order=6)
-    def test_wallet_unlock(self):
+    def test_wallet_unlock(self,get_venus_wallet_run_path):
         try:
-            wallet_unlock_info=os.popen("echo 'admin123' | /root/venus-wallet unlock").read()
+            wallet_unlock_info=os.popen(f"echo 'admin123' | {get_venus_wallet_run_path}/venus-wallet unlock").read()
             print ("venus-wallet unlock测试结果为：",wallet_unlock_info)
             if 'wallet unlock successfully' in wallet_unlock_info or 'wallet already unlocked' in wallet_unlock_info:
                 a=1
@@ -203,9 +208,9 @@ class Test_venus_wallet_auth():
         assert a==1,'venus-wallet unlock测试解锁钱包地址失败'
     @allure.story("测试venus-wallet lock-state查看钱包地址锁定状态是否正常")
     @pytest.mark.run(order=7)
-    def test_wallet_lock_state(self):
+    def test_wallet_lock_state(self,get_venus_wallet_run_path):
         try:
-            wallet_lock_state_info=os.popen("/root/venus-wallet lock-state").read()
+            wallet_lock_state_info=os.popen(f"{get_venus_wallet_run_path}/venus-wallet lock-state").read()
             print ("venus-wallet lock-state测试结果为：",wallet_lock_state_info)
             if 'wallet state: unlocked' in wallet_lock_state_info or 'wallet state: locked' in wallet_lock_state_info:
                 a=1
@@ -217,10 +222,10 @@ class Test_venus_wallet_auth():
         assert a==1,'venus-wallet lock-state测试查看钱包地址状态失败'
     @allure.story("测试venus-wallet support添加支持的用户是否正常")
     @pytest.mark.run(order=1)
-    def test_wallet_support(self):
+    def test_wallet_support(self,get_venus_wallet_run_path):
         account=uuid.uuid1()
         try:
-            os.popen(f"/root/venus-wallet support {account}")
+            os.popen(f"{get_venus_wallet_run_path}/venus-wallet support {account}")
             time.sleep(10)
             file='/root/.venus_wallet/config.toml'
             f=open(file,mode='r')

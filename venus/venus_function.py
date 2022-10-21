@@ -1,12 +1,5 @@
 import psutil
 import os
-def venus_run_path():
-    '''
-    用于获取venus进程运行目录，返回值为目录的绝对路径
-    '''
-    venus_path=os.popen("ps -ef | grep venus|grep daemon| grep -v grep| awk '{print $2}'| xargs pwdx | awk '{print $NF}'").read().strip()
-    return venus_path
-
 #获取进程是否存在函数,返回1表示存在，0表示不存在
 def process_check(process_name):
     '''

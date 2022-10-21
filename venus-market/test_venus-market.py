@@ -3,6 +3,11 @@ import allure
 import time
 import pytest
 import venus_market_function
+#获取venus-market程序运行目录
+#@pytest.fixture(scope='function',autouse=True)
+def get_venus_market_run_path():
+    venus_market_path=os.popen("ps -ef | grep venus-market|grep run| grep -v grep| awk '{print $2}'| xargs pwdx | awk '{print $NF}'").read().strip()
+    return venus_market_path
 @allure.epic("venus-market测试")
 @allure.feature("venus-market主程序测试")
 class Test_venus_market_status:
@@ -27,9 +32,9 @@ class Test_venus_market_status:
 class Test_venus_market_piece:
     @allure.story("测试venus-market pieces list-pieces查看pieces信息是否正常")
     @pytest.mark.run(order=2)
-    def test_venus_market_pieces_list_pieces(self):
+    def test_venus_market_pieces_list_pieces(self,get_venus_market_run_path):
         try:
-            list_pieces=os.popen("/root/venus-market pieces list-pieces").readlines()
+            list_pieces=os.popen(f"{get_venus_market_run_path}/venus-market pieces list-pieces").readlines()
             print ("list-pieces执行结果为：",list_pieces)
             a=1
         except Exception as e:
@@ -39,10 +44,10 @@ class Test_venus_market_piece:
 
     @allure.story("测试venus-market pieces piece-info查询特定pieces详细信息是否正常")
     @pytest.mark.run(order=3)
-    def test_venus_market_pieces_piece_info(self):
+    def test_venus_market_pieces_piece_info(self,get_venus_market_run_path):
         piece_cid=venus_market_function.venus_market_list_pieces()[0]
         try:
-            piece_info = os.popen(f"/root/venus-market pieces piece-info {piece_cid}").read()
+            piece_info = os.popen(f"{get_venus_market_run_path}/venus-market pieces piece-info {piece_cid}").read()
             print ("查询piece信息为：",piece_info)
             a=1
         except Exception as err:

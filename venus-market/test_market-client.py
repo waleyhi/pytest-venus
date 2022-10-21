@@ -4,36 +4,22 @@ import time
 import pytest
 import venus_market_function
 import pexpect
-
-
-@allure.epic("market-client测试")
-@allure.feature("market-client主程序测试")
-class Test_market_client_status:
-    @allure.story("测试market-client程序是否能启动")
-    @pytest.mark.run(order=1)
-    def test_market_client_start(self):
-        a = venus_market_function.process_check('market-client')
-        assert a == 1, "market-client 进程不存在"
-
-    @allure.story("测试market-client程序是否能稳定运行3分钟不崩溃")
-    @pytest.mark.run(order=1)
-    def test_market_client_alive(self):
-        a = venus_market_function.process_alive('market-client', 'pool-run')
-        b = time.time()
-        c = b - a
-        print("market-client 进程已稳定运行%f秒" % c)
-        assert c > 180, "market-client 运行时间不足3分钟"
-
+#获取market-client程序运行目录
+#@pytest.fixture(scope='function',autouse=True)
+def get_venus_market_client_run_path():
+    #由于market-client属于工具，而且一般跟venus-market放一起，故默认将venus-market目录作为client目录
+    venus_market_client_path=os.popen("ps -ef | grep venus-market|grep run| grep -v grep| awk '{print $2}'| xargs pwdx | awk '{print $NF}'").read().strip()
+    return venus_market_client_path
 
 @allure.epic("market-client测试")
 @allure.feature("market-client actor-funds功能模块测试")
 class TestMarketClientActorFunds:
     @allure.story("测试market-client actor-funds balances查看指定矿工市场余额是否正常")
     @pytest.mark.run(order=2)
-    def test_market_client_actor_funds_balances(self):
+    def test_market_client_actor_funds_balances(self,get_venus_market_client_run_path):
         test_miner = venus_market_function.venus_market_list_miner()[0]
         try:
-            actor_balance = os.popen(f"/root/market-client actor-funds balances {test_miner}").read()
+            actor_balance = os.popen(f"{get_venus_market_client_run_path}/market-client actor-funds balances {test_miner}").read()
             print("测试矿工号：", test_miner)
             print("查询balance执行结果为：", actor_balance)
             if 'Escrowed Funds' in actor_balance:
@@ -48,11 +34,11 @@ class TestMarketClientActorFunds:
 
     @allure.story("测试market-client actor-funds add增加指定矿工市场余额是否正常")
     @pytest.mark.run(order=3)
-    def test_market_client_actor_funds_add(self):
+    def test_market_client_actor_funds_add(self,get_venus_market_client_run_path):
         test_miner = venus_market_function.venus_market_list_miner()[0]
         try:
             actor_add = os.popen(
-                f"/root/market-client actor-funds add --address {test_miner} --from t3rugtczeric5kypbgnt7643omyxia6mkrevryrggrksqx73zfbqthgj7eumxbeap6hoctj45dc6k6ylyfm57a 100").read()
+                f"{get_venus_market_client_run_path}/market-client actor-funds add --address {test_miner} --from t3rugtczeric5kypbgnt7643omyxia6mkrevryrggrksqx73zfbqthgj7eumxbeap6hoctj45dc6k6ylyfm57a 100").read()
             print("测试矿工号：", test_miner)
             print("add执行结果为：", actor_add)
             if 'AddBalance message cid' in actor_add:
@@ -69,13 +55,13 @@ class TestMarketClientActorFunds:
 @allure.epic("market-client测试")
 @allure.feature("market-client data功能模块测试")
 class TestMarketClientData:
-    def test_market_client_data_import(self):
+    def test_market_client_data_import(self,get_venus_market_client_run_path):
         # 创建测试文件
         os.popen("dd if=/dev/zero of=/tmp/autotest-import-file-test.txt bs=1M count=5")
-        cmd_import = os.popen("/root/market-client data import /tmp/autotest-import-file-test.txt").read()
+        cmd_import = os.popen(f"{get_venus_market_client_run_path}/market-client data import /tmp/autotest-import-file-test.txt").read()
         # 获取输出结果中文件的cid
         file_cid = cmd_import.split()[-1]
-        print("测试import文件为/root/dev.gen")
+        print("测试import文件为/tmp/autotest-import-file-test.txt")
         print("import文件结果为：", cmd_import)
         data_info = venus_market_function.market_client_data_local()
         if file_cid in ''.join(data_info):
@@ -84,12 +70,12 @@ class TestMarketClientData:
             a = 0
         assert a == 1, "data import导入文件测试失败"
 
-    def test_market_client_data_drop(self):
+    def test_market_client_data_drop(self,get_venus_market_client_run_path):
         # 获取一条测试数据
         data_info01 = venus_market_function.market_client_data_local()[0]
         # 提取测试数据的import id并删除
         id_import = data_info01.split(':')[0]
-        os.popen(f"/root/market-client data drop {id_import}")
+        os.popen(f"{get_venus_market_client_run_path}/market-client data drop {id_import}")
         # 再次获取data信息
         data_info02 = venus_market_function.market_client_data_local()
         print("删除后data信息为：", data_info02)
@@ -99,12 +85,12 @@ class TestMarketClientData:
             a = 1
         assert a == 1, "data import导入文件测试失败"
 
-    def test_market_client_data_stat(self):
+    def test_market_client_data_stat(self,get_venus_market_client_run_path):
         # 获取一条测试数据
         data_info01 = venus_market_function.market_client_data_local()[0]
         # 提取测试数据中文件cid值
         file_cid = data_info01.split()[1]
-        data_stat = os.popen(f"/root/market-client data stat {file_cid}").read()
+        data_stat = os.popen(f"{get_venus_market_client_run_path}/market-client data stat {file_cid}").read()
         print("文件stat信息为：", data_stat)
         if 'Payload Size' in data_stat:
             a = 1
@@ -112,33 +98,32 @@ class TestMarketClientData:
             a = 0
         assert a == 1, "data stat查看import文件信息测试失败"
 
-
 @allure.epic("market-client测试")
 @allure.feature("market-client data功能模块测试")
 class Test_Market_Client_Storage:
-    def test_market_client_storage_asks(self):
+    def test_market_client_storage_asks(self,get_venus_market_client_run_path):
         test_miner = venus_market_function.venus_market_list_miner()[0]
-        miner_info = os.popen(f"/root/market-client storage asks query {test_miner}").read()
+        miner_info = os.popen(f"{get_venus_market_client_run_path}/market-client storage asks query {test_miner}").read()
         print("查询矿工存储市场信息为：", miner_info)
         assert test_miner in miner_info, "storage asks query查看矿工存储市场信息测试失败"
 
-    def test_market_client_storage_deals_list(self):
-        deals_list_info = os.popen("/root/market-client storage deals list").read()
+    def test_market_client_storage_deals_list(self,get_venus_market_client_run_path):
+        deals_list_info = os.popen(f"{get_venus_market_client_run_path}/market-client storage deals list").read()
         print("查询本地订单信息为：", deals_list_info)
         assert 'DealCid' in deals_list_info, "storage deals list查看订单信息测试失败"
 
-    def test_market_client_storage_deals_stats(self):
-        deals_stats_info = os.popen("/root/market-client storage deals stats").read()
+    def test_market_client_storage_deals_stats(self,get_venus_market_client_run_path):
+        deals_stats_info = os.popen(f"{get_venus_market_client_run_path}/market-client storage deals stats").read()
         print("查询本地订单状态为：", deals_stats_info)
         assert 'Total' in deals_stats_info, "storage deals stats查看订单状态测试失败"
-    def test_market_client_storage_init(self):
+    def test_market_client_storage_init(self,get_venus_market_client_run_path):
         #获取测试用的文件cid
         data_info = venus_market_function.market_client_data_local()[0]
         # 提取测试数据中文件cid值
         data_cid = data_info.split()[1]
         #获取测试矿工号
         test_miner=venus_market_function.venus_market_list_miner()[0]
-        deal_init=pexpect.spawn("/root/market-client storage deals init",timeout=180)
+        deal_init=pexpect.spawn(f"{get_venus_market_client_run_path}/market-client storage deals init",timeout=180)
         expect_list = ['Data CID.*',pexpect.EOF,pexpect.TIMEOUT,]
         index=deal_init.expect(expect_list)
         if index==0:
