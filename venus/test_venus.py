@@ -8,7 +8,7 @@ import time
 import pexpect
 import venus_function
 #获取venus程序运行目录
-#@pytest.fixture(scope='function',autouse=True)
+@pytest.fixture(scope='function',autouse=True)
 def get_venus_run_path():
     venus_path=os.popen("ps -ef | grep venus|grep daemon| grep -v grep| awk '{print $2}'| xargs pwdx | awk '{print $NF}'").read().strip()
     return venus_path
