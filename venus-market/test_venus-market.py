@@ -4,7 +4,7 @@ import time
 import pytest
 import venus_market_function
 #获取venus-market程序运行目录
-#@pytest.fixture(scope='function',autouse=True)
+@pytest.fixture(scope='function',autouse=True)
 def get_venus_market_run_path():
     venus_market_path=os.popen("ps -ef | grep venus-market|grep run| grep -v grep| awk '{print $2}'| xargs pwdx | awk '{print $NF}'").read().strip()
     return venus_market_path

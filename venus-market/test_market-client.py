@@ -5,7 +5,7 @@ import pytest
 import venus_market_function
 import pexpect
 #获取market-client程序运行目录
-#@pytest.fixture(scope='function',autouse=True)
+@pytest.fixture(scope='function',autouse=True)
 def get_venus_market_client_run_path():
     #由于market-client属于工具，而且一般跟venus-market放一起，故默认将venus-market目录作为client目录
     venus_market_client_path=os.popen("ps -ef | grep venus-market|grep run| grep -v grep| awk '{print $2}'| xargs pwdx | awk '{print $NF}'").read().strip()

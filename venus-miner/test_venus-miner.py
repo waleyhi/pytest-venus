@@ -4,7 +4,7 @@ import time
 import pytest
 import venus_miner_function
 #获取venus-miner程序运行目录
-#@pytest.fixture(scope='function',autouse=True)
+@pytest.fixture(scope='function',autouse=True)
 def get_venus_miner_run_path():
     venus_miner_path=os.popen("ps -ef | grep venus-miner|grep run| grep -v grep| awk '{print $2}'| xargs pwdx | awk '{print $NF}'").read().strip()
     return venus_miner_path
