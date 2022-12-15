@@ -57,7 +57,7 @@ class Teststate():
         power_info=os.popen(f"{get_venus_run_path}/venus state power t01000").readlines()[0]
         print ("命令执行结果为%s" % power_info)
         power=re.split('\(',power_info)[0]
-        assert int(power)==2516582400,"venus state power命令异常"
+        assert int(power)==0,"venus state power命令异常"
     @allure.story("venus state sectors 命令测试")
     def test_state_sectors(self,get_venus_run_path):
         sectors_info=os.popen(f"{get_venus_run_path}/venus state sectors t01000").readlines()[0]
@@ -66,15 +66,17 @@ class Teststate():
         assert int(sectors)==0,"venus state sectors 命令异常"
     @allure.story("venus state actor-cids 命令测试")
     def test_state_actor_cids(self,get_venus_run_path):
-        actor_cids=os.popen(f"{get_venus_run_path}/venus state actor-cids").readlines()
-        print ("命令执行结果为%s" % actor_cids)
-        for i in range(1,20):
-            if actor_cids[i]=='storagepower      bafk2bzaceb45l6zhgc34n6clz7xnvd7ek55bhw46q25umuje34t6kroix6hh6  \n':
+        try:
+            actor_cids=os.popen(f"{get_venus_run_path}/venus state actor-cids").readlines()
+            print ("命令执行结果为%s" % actor_cids)
+            if len(actor_cids) > 0:
                 a=1
-                break
             else:
                 a=0
-        assert a==1,"venus actor版本不对，请检查actor-cids"
+        except Exception as e:
+            print ("actor_cids命令执行报错，报错信息为：",e)
+            a=0
+        assert a==1,"actor_cids命令测试失败"
 
 #venus chain 命令模块测试
 @allure.epic("venus测试")
@@ -100,9 +102,9 @@ class Test_venus_wallet():
     def test_wallet_balance(self,get_venus_run_path):
         balance_info = os.popen(
             f"{get_venus_run_path}/venus wallet balance t3rugtczeric5kypbgnt7643omyxia6mkrevryrggrksqx73zfbqthgj7eumxbeap6hoctj45dc6k6ylyfm57a").readlines()[
-            0]
+            0].split()[0]
         print ("t3rugtczeric5kypbgnt7643omyxia6mkrevryrggrksqx73zfbqthgj7eumxbeap6hoctj45dc6k6ylyfm57a地址余额为：",balance_info)
-        assert os.system(f"{get_venus_run_path}")==0,"wallet balance失败，请检查命令"
+        assert int(balance_info)==0,"wallet balance失败，请检查命令"
     @allure.story("venus wallet set-password命令是否正常")
     @pytest.mark.run(order=1)
     def test_wallet_set_password(self,get_venus_run_path):

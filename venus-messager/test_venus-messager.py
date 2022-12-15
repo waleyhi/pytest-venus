@@ -217,11 +217,11 @@ class Test_venus_messager_share_params():
     @pytest.mark.run(order=1)
     def test_venus_messager_share_params_set(self,get_venus_messager_run_path):
         try:
-            messager_share_params_set = os.popen(f"{get_venus_messager_run_path}/venus-messager share-params set --gas-over-estimation=1.5 --max-fee=7 --max-feecap=7000000000 --sel-msg-num=1").read()
+            messager_share_params_set = os.popen(f"{get_venus_messager_run_path}/venus-messager share-params set --gas-over-estimation=1.5 --max-fee=7 --sel-msg-num=1").read()
             share_params_get=venus_messager_function.venus_messager_share_params_get()
             #转化为字典
             params_dict=eval(share_params_get)
-            if params_dict['gasOverEstimation']==1.5 and params_dict['maxFee']=='7' and params_dict['maxFeeCap']=='7000000000' and params_dict['selMsgNum']==1:
+            if params_dict['gasOverEstimation']==1.5 and params_dict['maxFee']=='7' and params_dict['selMsgNum']==1:
                 a=1
             else:
                 a=0

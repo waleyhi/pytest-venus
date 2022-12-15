@@ -5,11 +5,21 @@ import pytest
 import uuid
 import pexpect
 import venus_wallet_function
-#获取venus-wallet程序运行目录
+#定义测试需要用到的功能
 @pytest.fixture(scope='function',autouse=True)
+#获取venus-wallet程序运行目录
 def get_venus_wallet_run_path():
     venus_wallet_path=os.popen("ps -ef | grep venus-wallet |grep run| grep -v grep| awk '{print $2}'| xargs pwdx | awk '{print $NF}'").read().strip()
     return venus_wallet_path
+#定义测试t3地址
+def get_wallet_addr_for_test():
+    wallet_addr='t3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
+    return wallet_addr
+#定义测试私玥
+def get_wallet_privete_key_for_test():
+    wallet_privete_key='7b2254797065223a22626c73222c22507269766174654b6579223a225039715136684d414c74695162623955754c48624371586a4d555161576346346774466c6c4759434b52553d227d'
+    return wallet_privete_key
+
 @allure.epic("venus-wallet测试")
 @allure.feature("venus-wallet主程序测试")
 class Test_venus_wallet_status():
@@ -133,13 +143,11 @@ class Test_venus_wallet_auth():
         assert a==1,'venus-wallet new bls测试创建t3新地址失败'
     @allure.story("测试venus-wallet import导入钱包地址是否正常")
     @pytest.mark.run(order=3)
-    def test_wallet_import(self,get_venus_wallet_run_path):
-        global wallet_addr
-        global wallet_privete_key
+    def test_wallet_import(self,get_venus_wallet_run_path,get_wallet_addr_for_test,get_wallet_privete_key_for_test):
         try:
-            wallet_import_info=os.popen(f"echo '{wallet_privete_key}'|{get_venus_wallet_run_path}/venus-wallet import").read()
+            wallet_import_info=os.popen(f"echo '{get_wallet_privete_key_for_test}'|{get_venus_wallet_run_path}/venus-wallet import").read()
             print ("import地址结果为：",wallet_import_info)
-            if 'successfully' in wallet_import_info and wallet_addr in venus_wallet_function.venus_wallet_list():
+            if 'successfully' in wallet_import_info and get_wallet_addr_for_test in venus_wallet_function.venus_wallet_list():
                 a=1
             else:
                 a=0
@@ -149,13 +157,11 @@ class Test_venus_wallet_auth():
         assert a==1,'venus-wallet import地址测试失败'
     @allure.story("测试venus-wallet export导出钱包地址是否正常")
     @pytest.mark.run(order=4)
-    def test_wallet_export(self,get_venus_wallet_run_path):
-        global wallet_addr
-        global wallet_privete_key
+    def test_wallet_export(self,get_venus_wallet_run_path,get_wallet_addr_for_test,get_wallet_privete_key_for_test):
         try:
-            wallet_export_info = os.popen(f"echo 'admin123' | {get_venus_wallet_run_path}/venus-wallet export {wallet_addr}").read()
+            wallet_export_info = os.popen(f"echo 'admin123' | {get_venus_wallet_run_path}/venus-wallet export {get_wallet_addr_for_test}").read()
             print("export地址结果为：", wallet_export_info)
-            if wallet_privete_key in wallet_export_info:
+            if get_wallet_privete_key_for_test in wallet_export_info:
                 a = 1
             else:
                 a = 0
@@ -165,12 +171,12 @@ class Test_venus_wallet_auth():
         assert a == 1, 'venus-wallet export地址测试失败'
     @allure.story("测试venus-wallet del删除钱包地址是否正常")
     @pytest.mark.run(order=5)
-    def test_wallet_del(self,get_venus_wallet_run_path):
+    def test_wallet_del(self,get_venus_wallet_run_path,get_wallet_addr_for_test):
         global wallet_addr
         try:
-            wallet_del_info = os.popen(f"echo 'admin123' | {get_venus_wallet_run_path}/venus-wallet del {wallet_addr}").read()
+            wallet_del_info = os.popen(f"echo 'admin123' | {get_venus_wallet_run_path}/venus-wallet del {get_wallet_addr_for_test}").read()
             print("删除钱包地址结果为：", wallet_del_info)
-            if 'success' in wallet_del_info and wallet_addr not in venus_wallet_function.venus_wallet_list():
+            if 'success' in wallet_del_info and get_wallet_addr_for_test not in venus_wallet_function.venus_wallet_list():
                 a = 1
             else:
                 a = 0
@@ -242,9 +248,4 @@ class Test_venus_wallet_auth():
             a=0
         assert a==1,'venus-wallet lock-state测试查看钱包地址状态失败'
 if __name__ == '__main__':
-    #定义全局变量，用于地址导入、导出、删除测试
-    global wallet_addr
-    global wallet_privete_key
-    wallet_addr='t3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
-    wallet_privete_key='7b2254797065223a22626c73222c22507269766174654b6579223a225039715136684d414c74695162623955754c48624371586a4d555161576346346774466c6c4759434b52553d227d'
     pytest.main()
