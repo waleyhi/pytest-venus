@@ -58,7 +58,7 @@ class Test_venus_miner():
         stop_info = os.popen(f"{get_venus_miner_run_path}/venus-miner address stop {venus_auth_miner}").read()
         print (f"{venus_auth_miner}停止挖矿结果为：",stop_info)
         miner_state=venus_miner_function.venus_miner_state(f'{venus_auth_miner}')
-        if 'stop mining success' in stop_info and miner_state=='False':
+        if 'stop mining success' in stop_info and miner_state=='false':
             a=1
         else:
             a=0
@@ -71,7 +71,7 @@ class Test_venus_miner():
         start_info = os.popen(f"{get_venus_miner_run_path}/venus-miner address start {venus_auth_miner}").read()
         print (f"{venus_auth_miner}停止挖矿结果为：",start_info)
         miner_state=venus_miner_function.venus_miner_state(f'{venus_auth_miner}')
-        if 'start mining success' in start_info and miner_state=='True':
+        if 'start mining success' in start_info and miner_state=='true':
             a=1
         else:
             a=0
