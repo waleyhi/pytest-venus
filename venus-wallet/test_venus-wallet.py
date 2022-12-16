@@ -12,9 +12,11 @@ def get_venus_wallet_run_path():
     venus_wallet_path=os.popen("ps -ef | grep venus-wallet |grep run| grep -v grep| awk '{print $2}'| xargs pwdx | awk '{print $NF}'").read().strip()
     return venus_wallet_path
 #定义测试t3地址
+@pytest.fixture(scope='function',autouse=True)
 def get_wallet_addr_for_test():
     wallet_addr='t3waqhfglxquvmdeqko7jb3qkd6vrpsdaduhnlsbvotu6zajf2dbp4uk5pip3mbjbq6dj4iun7tqzkkh3nrtla'
     return wallet_addr
+@pytest.fixture(scope='function',autouse=True)
 #定义测试私玥
 def get_wallet_privete_key_for_test():
     wallet_privete_key='7b2254797065223a22626c73222c22507269766174654b6579223a225039715136684d414c74695162623955754c48624371586a4d555161576346346774466c6c4759434b52553d227d'
