@@ -57,7 +57,7 @@ class Teststate():
         power_info=os.popen(f"{get_venus_run_path}/venus state power t01000").readlines()[0]
         print ("命令执行结果为%s" % power_info)
         power=re.split('\(',power_info)[0]
-        assert int(power)==0,"venus state power命令异常"
+        assert int(power) > 0,"venus state power命令异常"
     @allure.story("venus state sectors 命令测试")
     def test_state_sectors(self,get_venus_run_path):
         sectors_info=os.popen(f"{get_venus_run_path}/venus state sectors t01000").readlines()[0]
@@ -104,7 +104,7 @@ class Test_venus_wallet():
             f"{get_venus_run_path}/venus wallet balance t3rugtczeric5kypbgnt7643omyxia6mkrevryrggrksqx73zfbqthgj7eumxbeap6hoctj45dc6k6ylyfm57a").readlines()[
             0].split()[0]
         print ("t3rugtczeric5kypbgnt7643omyxia6mkrevryrggrksqx73zfbqthgj7eumxbeap6hoctj45dc6k6ylyfm57a地址余额为：",balance_info)
-        assert int(balance_info)==0,"wallet balance失败，请检查命令"
+        assert int(balance_info) > 0,"wallet balance测试失败，请检查命令"
     @allure.story("venus wallet set-password命令是否正常")
     @pytest.mark.run(order=1)
     def test_wallet_set_password(self,get_venus_run_path):
