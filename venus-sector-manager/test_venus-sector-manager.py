@@ -2,8 +2,6 @@ import os
 import allure
 import time
 import pytest
-import uuid
-import pexpect
 import venus_sector_manager_function as vsm
 
 @allure.epic("venus-sector-manager测试")
@@ -52,8 +50,8 @@ class Test_venus_sector_manager_auth():
         except Exception as e:
             print(f"vsm查询矿工信息报错，报错信息为：{e}")
         assert a == 1, "vsm查询矿工测试失败"
-    @allure.story("测试venus-sector-manager set-password设置密码是否正常")
-    def test_wallet_set_password(self,get_venus_sector_manager_run_path):
+    @allure.story("测试venus-sector-manager util miner create创建矿工是否正常")
+    def test_wallet_set_password(self):
         try:
             vsm_miner_create_info = os.popen(
                 f"{vsm.get_venus_sector_manager_run_path()}/venus-sector-manager util miner create --from t3wknhyskfndkpusfyl5o2uh4724radjxesfortxigrewti3izvjhsoucf5y22wuvq6ag4h2a62nzp42rfnq6q --sector-size 8M").read()
