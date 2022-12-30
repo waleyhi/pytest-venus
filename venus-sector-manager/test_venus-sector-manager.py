@@ -10,12 +10,12 @@ class Test_venus_sector_manager_status():
     @allure.story("测试venus-sector-manager程序是否能启动")
     @pytest.mark.run(order=1)
     def test_venus_sector_manager_start(self):
-        a= venus_sector_manager_function.process_check('venus-sector-manager')
+        a= vsm.process_check('venus-sector-manager')
         assert a==1,"venus-sector-manager 进程不存在"
     @allure.story("测试venus-sector-manager程序是否能稳定运行3分钟不崩溃")
     @pytest.mark.run(order=1)
     def test_venus_sector_manager_alive(self):
-        a= venus_sector_manager_function.process_alive('venus-sector-manager','run')
+        a= vsm.process_alive('venus-sector-manager','run')
         b=time.time()
         c=b-a
         print ("venus-sector-manager 进程已稳定运行%f秒" % c)
@@ -35,6 +35,7 @@ class Test_venus_sector_manager_auth():
             else:
                 a=0
         except Exception as e:
+            a=0
             print (f"vsm查询高度信息报错，报错信息为：{e}")
         assert a == 1, "vsm获取高度测试失败"
     @allure.story("测试venus-sector-manager util miner info查看矿工信息是否正常")
@@ -48,6 +49,7 @@ class Test_venus_sector_manager_auth():
             else:
                 a = 0
         except Exception as e:
+            a=0
             print(f"vsm查询矿工信息报错，报错信息为：{e}")
         assert a == 1, "vsm查询矿工测试失败"
     @allure.story("测试venus-sector-manager util miner create创建矿工是否正常")
@@ -61,6 +63,7 @@ class Test_venus_sector_manager_auth():
             else:
                 a = 0
         except Exception as e:
+            a=0
             print(f"vsm创建矿工报错，报错信息为：{e}")
         assert a == 1, "vsm创建矿工测试失败"
 
